@@ -36,6 +36,19 @@ const App = () => {
         if (user && user._id) {
           console.log("Setting userId to:", user._id);
           setUserId(user._id);
+          setTimeout(() => {
+            get("/api/whoami").then((verifiedUser) => {
+              console.log("Session verification:", verifiedUser);
+              if (verifiedUser && verifiedUser._id) {
+                console.log("Session confirmed, userId:", verifiedUser._id);
+                setUserId(verifiedUser._id);
+              } else {
+                console.error("Session not persisting!");
+              }
+            }).catch((err) => {
+              console.error("Session verification failed:", err);
+            });
+          }, 500);
           post("/api/initsocket", { socketid: socket.id }).catch((err) => {
             console.error("Failed to initialize socket:", err);
           });
