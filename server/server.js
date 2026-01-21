@@ -88,21 +88,34 @@ app.use("/api", api);
 const reactPath = path.resolve(__dirname, "..", "client", "dist");
 console.log("React path:", reactPath);
 
-// Serve static files from the React app
-app.use(express.static(reactPath));
+const fs = require("fs");
+const indexPath = path.join(reactPath, "index.html");
+if (fs.existsSync(indexPath)) {
+  console.log("✓ index.html found at:", indexPath);
+} else {
+  console.error("✗ index.html NOT found at:", indexPath);
+  console.error("Build may have failed or dist folder is missing");
+}
+
+
+app.use(express.static(reactPath, { fallthrough: true }));
 
 // for all other routes (except /api), render index.html and let react router handle it
-app.get("*", (req, res, next) => {
+app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     return next();
   }
 
-  const indexPath = path.join(reactPath, "index.html");
-  console.log("Serving index.html for route:", req.path);
+  console.log(`Serving index.html for ${req.method} ${req.path}`);
 
   res.sendFile(indexPath, (err) => {
     if (err) {
       console.error("Error sending client/dist/index.html:", err);
+      console.error("Error details:", {
+        code: err.code,
+        path: err.path,
+        syscall: err.syscall
+      });
       res.status(500).send(`
         <html>
           <body>
@@ -113,6 +126,8 @@ app.get("*", (req, res, next) => {
           </body>
         </html>
       `);
+    } else {
+      console.log(`✓ Successfully served index.html for: ${req.path}`);
     }
   });
 });
@@ -133,8 +148,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// hardcode port to 3000 for now
-const port = 3000;
+const port = process.env.PORT || 3000;
 const server = http.Server(app);
 socketManager.init(server);
 
