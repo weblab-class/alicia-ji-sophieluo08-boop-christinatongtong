@@ -4,11 +4,13 @@ import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { UserContext } from "../App";
 import DifficultySelector from "../modules/DifficultySelector";
 import "./Home.css";
+import HamburgerMenu from "../modules/HamburgerMenu";
 
 const Home = () => {
   const navigate = useNavigate();
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     console.log("Home component - userId changed:", userId);
@@ -39,6 +41,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      <HamburgerMenu />
       <div className="home-content">
         <h1 className="app-title">FILL</h1>
 
@@ -62,9 +65,6 @@ const Home = () => {
               disabled={!selectedDifficulty}
             >
               Start Game
-            </button>
-            <button className="logout-button" onClick={handleLogoutClick}>
-              Logout
             </button>
           </>
         )}

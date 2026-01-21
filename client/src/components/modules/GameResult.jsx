@@ -1,4 +1,5 @@
 import ScoreDisplay from "./ScoreDisplay";
+import HamburgerMenu from "./HamburgerMenu";
 
 function Feedback({ score }) {
     if (score >= 100) {
@@ -16,6 +17,7 @@ function GameResult({ score, accuracy, time, onPlayAgain }) {
 
   return (
     <div className="game-result">
+        <HamburgerMenu />
         <h1>GAME OVER</h1>
         <h2 className="feedback">{feedback}</h2>
         <ScoreDisplay score={score} accuracy={accuracy} time={time} />

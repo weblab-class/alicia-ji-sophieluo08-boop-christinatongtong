@@ -24,6 +24,7 @@ const getColorHex = (color) => {
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ColorGrid.css";
+import HamburgerMenu from "./HamburgerMenu";
 
 const ColorGrid = ({
   gameId,
@@ -162,6 +163,7 @@ const ColorGrid = ({
 
   return (
     <div className="color-grid-wrapper">
+      <HamburgerMenu />
       <div className="timer-display">{phase === "memorize" ? timer : playTimer}s</div>
 
       {/* Memorize Phase - Show colored grid */}
