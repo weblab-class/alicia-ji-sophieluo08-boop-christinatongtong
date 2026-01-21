@@ -86,14 +86,33 @@ app.use("/api", api);
 
 // load the compiled react files, which will serve /index.html and /bundle.js
 const reactPath = path.resolve(__dirname, "..", "client", "dist");
+console.log("React path:", reactPath);
+
+// Serve static files from the React app
 app.use(express.static(reactPath));
 
-// for all other routes, render index.html and let react router handle it
-app.get("*", (req, res) => {
-  res.sendFile(path.join(reactPath, "index.html"), (err) => {
+// for all other routes (except /api), render index.html and let react router handle it
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+
+  const indexPath = path.join(reactPath, "index.html");
+  console.log("Serving index.html for route:", req.path);
+
+  res.sendFile(indexPath, (err) => {
     if (err) {
-      console.log("Error sending client/dist/index.html:", err.status || 500);
-      res.status(err.status || 500).send("Error sending client/dist/index.html - have you run `npm run build`?");
+      console.error("Error sending client/dist/index.html:", err);
+      res.status(500).send(`
+        <html>
+          <body>
+            <h1>Error: React app not built</h1>
+            <p>Error: ${err.message}</p>
+            <p>Path: ${indexPath}</p>
+            <p>Please run: npm run build</p>
+          </body>
+        </html>
+      `);
     }
   });
 });
