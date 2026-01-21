@@ -322,7 +322,7 @@ router.get("/stats/leaderboard", (req, res) => {
     });
 });
 
-// GET /api/stats/user/:userId 
+// GET /api/stats/user/:userId
 // get user stats
 router.get("/stats/user/:userId", (req, res) => {
   const userId = req.params.userId;

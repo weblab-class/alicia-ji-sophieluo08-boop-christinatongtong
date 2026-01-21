@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import Skeleton from "./components/pages/Skeleton";
 import NotFound from "./components/pages/NotFound";
+import GameResult from "./components/modules/GameResult";
+import Profile from "./components/pages/Profile";
 
 import {
   createBrowserRouter,
@@ -20,6 +22,8 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route errorElement={<NotFound />} element={<App />}>
       <Route path="/" element={<Skeleton />} />
+      <Route path="/game-result" element={<GameResult score={67} accuracy={67} time={67} onPlayAgain={() => {}} />} />
+      <Route path="/profile" element={<Profile name="Beaver Tim" email="beavertim@mit.edu" bestScore={67} />} />
     </Route>
   )
 )
