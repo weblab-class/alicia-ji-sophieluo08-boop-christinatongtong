@@ -131,17 +131,37 @@ const ColorGrid = () => {
       {phase === "gameover" && (
         <div className="gameover-container">
           <div className="phase-title">Time's up!</div>
-          <div className="final-grid">
-            <div className="color-grid">
-              {userGrid.map((color, index) => (
-                <div
-                  key={index}
-                  className="final-cell"
-                  style={{ backgroundColor: color || "#f5f5f5" }}
-                ></div>
-              ))}
+          
+          <div className="comparison-container">
+            {/* Original Grid */}
+            <div className="comparison-section">
+              <div className="comparison-label">Original</div>
+              <div className="color-grid">
+                {colors.map((color, index) => (
+                  <div
+                    key={index}
+                    className="final-cell"
+                    style={{ backgroundColor: color }}
+                  ></div>
+                ))}
+              </div>
+            </div>
+
+            {/* User's Grid */}
+            <div className="comparison-section">
+              <div className="comparison-label">Your Input</div>
+              <div className="color-grid">
+                {userGrid.map((color, index) => (
+                  <div
+                    key={index}
+                    className="final-cell"
+                    style={{ backgroundColor: color || "#f5f5f5" }}
+                  ></div>
+                ))}
+              </div>
             </div>
           </div>
+
           <div className="score">You filled {userGrid.filter((c) => c !== null).length} out of 9 squares</div>
         </div>
       )}
