@@ -85,7 +85,6 @@ const ColorGrid = ({ gameId, gridSize, timeLimit, colorBank, correctPattern }) =
         newGrid[index] = selectedColor; // Store color name
         return newGrid;
       });
-      setSelectedColor(null);
     }
   };
 
@@ -107,6 +106,19 @@ const ColorGrid = ({ gameId, gridSize, timeLimit, colorBank, correctPattern }) =
 
   const isGridFull = userGrid.every((color) => color !== null);
 
+  const calculateScore = () => {
+    let correctMatches = 0;
+    for (let i = 0; i < totalSquares; i++) {
+      const expected = correctPattern[i.toString()];
+      if (userGrid[i] && expected && userGrid[i] === expected) {
+        correctMatches++;
+      }
+    }
+    const percentage = Math.round((correctMatches / totalSquares) * 100);
+    return { correctMatches, percentage };
+  };
+  
+  const { correctMatches, percentage } = calculateScore();
   // Create grid style based on gridSize
   const gridStyle = {
     display: "grid",
@@ -148,8 +160,8 @@ const ColorGrid = ({ gameId, gridSize, timeLimit, colorBank, correctPattern }) =
               {userGrid.map((colorName, index) => (
                 <div
                   key={index}
-                  className={`play-cell ${selectedColor ? "clickable" : ""}`}
-                  style={{ backgroundColor: getColorHex(colorName) }}
+                  className={`play-cell ${selectedColor ? "clickable" : ""} ${colorName ? "filled" : ""}`}
+                  style={{ backgroundColor: colorName ? getColorHex(colorName) : "#f5f5f5" }}
                   onClick={() => handleGridCellClick(index)}
                 >
                   {!colorName && selectedColor && <div className="click-hint">+</div>}
@@ -186,18 +198,43 @@ const ColorGrid = ({ gameId, gridSize, timeLimit, colorBank, correctPattern }) =
       {phase === "gameover" && (
         <div className="gameover-container">
           <div className="phase-title">Time's up!</div>
-          <div className="final-grid">
-            <div className="color-grid" style={gridStyle}>
-              {userGrid.map((colorName, index) => (
-                <div
-                  key={index}
-                  className="final-cell"
-                  style={{ backgroundColor: getColorHex(colorName) }}
-                ></div>
-              ))}
+
+          <div className="comparison-container">
+            {/* Original Grid */}
+            <div className="comparison-section">
+              <div className="comparison-label">Original</div>
+              <div className="color-grid" style={gridStyle}>
+                {Array.from({ length: totalSquares }, (_, index) => {
+                  const expected = correctPattern[index.toString()];
+                  const hex = expected ? (COLOR_MAP[expected] || "#CCCCCC") : "#f5f5f5";
+                  return (
+                    <div key={index} className="final-cell" style={{ backgroundColor: hex }}></div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* User's Grid */}
+            <div className="comparison-section">
+              <div className="comparison-label">Your Input</div>
+              <div className="color-grid" style={gridStyle}>
+                {userGrid.map((colorName, index) => (
+                  <div
+                    key={index}
+                    className="final-cell"
+                    style={{ backgroundColor: getColorHex(colorName) }}
+                  ></div>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="score">You filled {userGrid.filter((c) => c !== null).length} out of {totalSquares} squares</div>
+
+          <div className="score-details">
+            <div className="score-title">Your Score</div>
+            <div className="score-percentage">{percentage}%</div>
+            <div className="score-matches">{correctMatches} out of {totalSquares} correct</div>
+          </div>
+
           <div className="button-group">
             <button className="play-again-btn" onClick={handlePlayAgain}>
               Play Again
