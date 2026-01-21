@@ -2,12 +2,16 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import svgr from 'vite-plugin-svgr';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react(), svgr()],
-  root: path.resolve(__dirname, 'client'), // Set the root directory for Vite
+  root: './client', // Set the root directory for Vite (relative to config file)
   build: {
-    outDir: path.resolve(__dirname, 'client/dist'), // Output directory for production build
+    outDir: './dist', // Output directory (relative to root, so client/dist)
     emptyOutDir: true,
   },
   server: {

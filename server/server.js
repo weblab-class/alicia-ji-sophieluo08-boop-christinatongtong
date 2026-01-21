@@ -95,11 +95,19 @@ console.log("React path:", reactPath);
 
 const fs = require("fs");
 const indexPath = path.join(reactPath, "index.html");
-if (fs.existsSync(indexPath)) {
-  console.log("✓ index.html found at:", indexPath);
+
+// check if dist folder exists
+if (!fs.existsSync(reactPath)) {
+  console.error("✗ ERROR: dist folder does not exist at:", reactPath);
+  console.error("Build command may not have run. Make sure 'npm run build' is in your build script.");
+  console.error("Current working directory:", process.cwd());
+  console.error("__dirname:", __dirname);
+} else if (!fs.existsSync(indexPath)) {
+  console.error("✗ ERROR: index.html NOT found at:", indexPath);
+  console.error("Build may have failed. Check build logs.");
+  console.error("Files in dist:", fs.readdirSync(reactPath));
 } else {
-  console.error("✗ index.html NOT found at:", indexPath);
-  console.error("Build may have failed or dist folder is missing");
+  console.log("✓ index.html found at:", indexPath);
 }
 
 
