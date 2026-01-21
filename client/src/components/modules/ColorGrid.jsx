@@ -37,6 +37,7 @@ const ColorGrid = ({
   const navigate = useNavigate();
 
   if (!gridSize || !correctPattern) {
+    console.warn("ColorGrid: Missing required props", { gridSize, hasPattern: !!correctPattern });
     return (
       <div className="color-grid-wrapper">
         <div className="loading-message">Loading game data...</div>

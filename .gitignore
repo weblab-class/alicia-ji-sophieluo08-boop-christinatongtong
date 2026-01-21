@@ -1,4 +1,7 @@
-client/dist/bundle.js
+# Build output - should not be committed
+client/dist/
+dist/
+
 node_modules/
 .DS_Store
 .env
