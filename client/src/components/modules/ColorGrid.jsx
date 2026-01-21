@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "./ColorGrid.css";
 
 const ColorGrid = () => {
-  const navigate = useNavigate();
-
   const colors = [
     "#FF6B6B", // Red
     "#4ECDC4", // Teal
     "#FFE66D", // Yellow
     "#95E1D3", // Mint
+    "#C7CEEA", // Lavender
+    "#FF8B94", // Pink
+    "#B4A7D6", // Purple
+    "#73A580", // Green
+    "#FFA07A", // Light Salmon
   ];
-
-  const generateRandomGrid = () => {
-    return Array(9)
-      .fill(null)
-      .map(() => colors[Math.floor(Math.random() * colors.length)]);
-  };
 
   const [phase, setPhase] = useState("memorize"); // memorize, play
   const [timer, setTimer] = useState(10); // 10 seconds for memorize phase
   const [playTimer, setPlayTimer] = useState(60); // 60 seconds for play phase
-  const [originalGrid, setOriginalGrid] = useState(() => generateRandomGrid()); // Random 3x3 grid to memorize
   const [userGrid, setUserGrid] = useState(Array(9).fill(null)); // Empty grid for user to fill
   const [selectedColor, setSelectedColor] = useState(null); // Currently selected color
   const [showColorGrid, setShowColorGrid] = useState(true); // Show colored grid during memorize phase
@@ -53,17 +48,6 @@ const ColorGrid = () => {
     }
   }, [phase, playTimer]);
 
-  const calculateScore = () => {
-    let correctMatches = 0;
-    for (let i = 0; i < 9; i++) {
-      if (userGrid[i] === originalGrid[i]) {
-        correctMatches++;
-      }
-    }
-    const percentage = Math.round((correctMatches / 9) * 100);
-    return { correctMatches, percentage };
-  };
-
   const handleColorPaletteClick = (color) => {
     setSelectedColor(selectedColor === color ? null : color);
   };
@@ -79,27 +63,11 @@ const ColorGrid = () => {
     }
   };
 
-  const handlePlayAgain = () => {
-    setPhase("memorize");
-    setTimer(10);
-    setPlayTimer(60);
-    setOriginalGrid(generateRandomGrid());
-    setUserGrid(Array(9).fill(null));
-    setSelectedColor(null);
-    setShowColorGrid(true);
-  };
-
-  const handleGoHome = () => {
-    navigate("/");
-  };
-
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
-
-  const { correctMatches, percentage } = calculateScore();
 
   return (
     <div className="color-grid-wrapper">
@@ -110,7 +78,7 @@ const ColorGrid = () => {
         <div className="color-grid-container">
           <div className="phase-title">Memorize the colors!</div>
           <div className="color-grid">
-            {originalGrid.map((color, index) => (
+            {colors.map((color, index) => (
               <div
                 key={index}
                 className="color-cell"
@@ -163,51 +131,18 @@ const ColorGrid = () => {
       {phase === "gameover" && (
         <div className="gameover-container">
           <div className="phase-title">Time's up!</div>
-
-          <div className="comparison-container">
-            {/* Original Grid */}
-            <div className="comparison-section">
-              <div className="comparison-label">Original</div>
-              <div className="color-grid">
-                {originalGrid.map((color, index) => (
-                  <div
-                    key={index}
-                    className="final-cell"
-                    style={{ backgroundColor: color }}
-                  ></div>
-                ))}
-              </div>
-            </div>
-
-            {/* User's Grid */}
-            <div className="comparison-section">
-              <div className="comparison-label">Your Input</div>
-              <div className="color-grid">
-                {userGrid.map((color, index) => (
-                  <div
-                    key={index}
-                    className="final-cell"
-                    style={{ backgroundColor: color || "#f5f5f5" }}
-                  ></div>
-                ))}
-              </div>
+          <div className="final-grid">
+            <div className="color-grid">
+              {userGrid.map((color, index) => (
+                <div
+                  key={index}
+                  className="final-cell"
+                  style={{ backgroundColor: color || "#f5f5f5" }}
+                ></div>
+              ))}
             </div>
           </div>
-
-          <div className="score-details">
-            <div className="score-title">Your Score</div>
-            <div className="score-percentage">{percentage}%</div>
-            <div className="score-matches">{correctMatches} out of 9 correct</div>
-          </div>
-
-          <div className="button-group">
-            <button className="play-again-btn" onClick={handlePlayAgain}>
-              Play Again
-            </button>
-            <button className="home-btn" onClick={handleGoHome}>
-              Go Home
-            </button>
-          </div>
+          <div className="score">You filled {userGrid.filter((c) => c !== null).length} out of 9 squares</div>
         </div>
       )}
     </div>

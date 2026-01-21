@@ -25,8 +25,9 @@ const router = createBrowserRouter(
     <Route errorElement={<NotFound />} element={<App />}>
       <Route path="/" element={<Home />} />
       <Route path="/game" element={<Game />} />
-      <Route path="/game-result" element={<GameResult score={67} accuracy={67} time={67} onPlayAgain={() => {}} />} />
+      <Route path="/game-result" element={<GameResult score={67} accuracy={67} time={67} onPlayAgain={() => { }} />} />
       <Route path="/profile" element={<Profile name="Beaver Tim" email="beavertim@mit.edu" bestScore={67} />} />
+      <Route path="/skeleton" element={<Skeleton />} />
     </Route>
   )
 )
