@@ -81,6 +81,11 @@ app.use(
 // this checks if the user is logged in, and populates "req.user"
 app.use(auth.populateCurrentUser);
 
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
 // connect user-defined routes
 app.use("/api", api);
 
@@ -98,23 +103,28 @@ if (fs.existsSync(indexPath)) {
 }
 
 
-app.use(express.static(reactPath, { fallthrough: true }));
 
-// for all other routes (except /api), render index.html and let react router handle it
-app.use((req, res, next) => {
+app.use(express.static(reactPath, {
+  fallthrough: true,
+  index: false // Don't serve index.html automatically, we'll handle it below
+}));
+
+
+app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) {
-    return next();
+    return res.status(404).json({ error: "API route not found" });
   }
 
-  console.log(`Serving index.html for ${req.method} ${req.path}`);
+  console.log(`[Catch-all] Serving index.html for ${req.method} ${req.path}`);
 
   res.sendFile(indexPath, (err) => {
     if (err) {
-      console.error("Error sending client/dist/index.html:", err);
+      console.error("Error sending index.html:", err);
       console.error("Error details:", {
         code: err.code,
         path: err.path,
-        syscall: err.syscall
+        syscall: err.syscall,
+        message: err.message
       });
       res.status(500).send(`
         <html>
