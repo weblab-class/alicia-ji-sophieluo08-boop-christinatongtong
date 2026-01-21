@@ -85,6 +85,7 @@ const ColorGrid = ({ gameId, gridSize, timeLimit, colorBank, correctPattern }) =
         newGrid[index] = selectedColor; // Store color name
         return newGrid;
       });
+      setSelectedColor(null);
     }
   };
 
@@ -117,7 +118,7 @@ const ColorGrid = ({ gameId, gridSize, timeLimit, colorBank, correctPattern }) =
     const percentage = Math.round((correctMatches / totalSquares) * 100);
     return { correctMatches, percentage };
   };
-  
+
   const { correctMatches, percentage } = calculateScore();
   // Create grid style based on gridSize
   const gridStyle = {
