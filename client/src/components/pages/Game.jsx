@@ -24,9 +24,10 @@ const Game = () => {
       return;
     }
 
-    // if no difficulty data, redirect to home page
+
     if (!difficultyData) {
-      navigate("/");
+      console.log("No difficulty data, redirecting to home");
+      navigate("/", { replace: true });
       return;
     }
 
@@ -65,6 +66,14 @@ const Game = () => {
     createGame();
   }, [difficultyData, navigate, userId]);
 
+  if (!difficultyData) {
+    return (
+      <div className="game-container">
+        <div className="loading-message">Redirecting to home...</div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="game-container">
@@ -86,6 +95,7 @@ const Game = () => {
     return (
       <div className="game-container">
         <div className="loading-message">No game data available</div>
+        <button onClick={() => navigate("/")}>Go Back</button>
       </div>
     );
   }
