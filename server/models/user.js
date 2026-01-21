@@ -3,6 +3,19 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   name: String,
   googleid: String,
+  // statistics
+  gamesPlayed: {
+    type: Number,
+    default: 0,
+  },
+  bestScore: {
+    type: Number,
+    default: 0,
+  },
+  averageAccuracy: {
+    type: Number,
+    default: 0,
+  },
 });
 
 // compile model from schema
