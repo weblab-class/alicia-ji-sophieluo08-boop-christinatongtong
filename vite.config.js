@@ -8,6 +8,7 @@ export default defineConfig({
   root: path.resolve(__dirname, 'client'), // Set the root directory for Vite
   build: {
     outDir: path.resolve(__dirname, 'client/dist'), // Output directory for production build
+    emptyOutDir: true,
   },
   server: {
     port: 5173,
@@ -20,7 +21,7 @@ export default defineConfig({
         target: 'http://localhost:3000',
         ws: true,
         changeOrigin: true,
-    },
+      },
     }
   }
 });

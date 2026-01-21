@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./ColorGrid.css";
+
 // Color name to hex mapping for comparison phase
 const COLOR_MAP = {
   red: "#FF6B6B",
@@ -7,6 +11,7 @@ const COLOR_MAP = {
   purple: "#B4A7D6",
   orange: "#FFA07A",
 };
+
 // Helper to map color names to hex
 const getColorHex = (color) => {
   if (!color) return "#f5f5f5";
@@ -17,13 +22,9 @@ const getColorHex = (color) => {
     green: "#73A580",
     purple: "#B4A7D6",
     orange: "#FFA07A",
-    // fallback for direct hex
   };
   return colorMap[color] || color;
 };
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./ColorGrid.css";
 
 const ColorGrid = ({
   gameId,
