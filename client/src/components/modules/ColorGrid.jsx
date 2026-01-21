@@ -22,6 +22,7 @@ const getColorHex = (color) => {
   return colorMap[color] || color;
 };
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ColorGrid.css";
 
 const ColorGrid = ({
@@ -32,6 +33,16 @@ const ColorGrid = ({
   correctPattern,
   difficulty
 }) => {
+  const navigate = useNavigate();
+
+  if (!gridSize || !correctPattern) {
+    return (
+      <div className="color-grid-wrapper">
+        <div className="loading-message">Loading game data...</div>
+      </div>
+    );
+  }
+
   // Use colorBank from props, fallback to default if missing
   const defaultColors = [
     "#FF6B6B", // Red
@@ -267,9 +278,9 @@ const ColorGrid = ({
 
             {/* TODO: Add "onLeaderboard" function later */}
             <button className="result-button leaderboard-button">
-                Leaderboard
+              Leaderboard
             </button>
-        </div>
+          </div>
 
         </div>
       )}
