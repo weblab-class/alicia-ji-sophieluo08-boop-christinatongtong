@@ -42,13 +42,6 @@ const Home = () => {
       <div className="home-content">
         <h1 className="app-title">FILL</h1>
 
-        {/* Debug info - remove in production */}
-        {process.env.NODE_ENV === "development" && (
-          <div style={{ color: "white", fontSize: "12px", marginBottom: "10px" }}>
-            Debug: userId = {userId ? userId : "null"}
-          </div>
-        )}
-
         {!userId ? (
           <div className="login-section">
             <p className="login-prompt">Please log in to play</p>
