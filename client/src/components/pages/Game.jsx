@@ -36,15 +36,37 @@ const Game = () => {
       try {
         setLoading(true);
         setError(null);
+        console.log("Creating game with:", {
+          gridSize: difficultyData.gridSize,
+          difficulty: difficultyData.difficulty,
+        });
+
         const response = await post("/api/game/create", {
           gridSize: difficultyData.gridSize,
           difficulty: difficultyData.difficulty,
         });
+
+        console.log("Game created successfully:", response);
+        console.log("Response keys:", Object.keys(response || {}));
+
+        if (!response || !response.gameId) {
+          throw new Error("Invalid game response: missing gameId");
+        }
+        if (!response.gridSize) {
+          throw new Error("Invalid game response: missing gridSize");
+        }
+        if (!response.correctPattern) {
+          throw new Error("Invalid game response: missing correctPattern");
+        }
+
         setGameData(response);
+        console.log("Game data set successfully");
       } catch (err) {
         console.error("Error creating game:", err);
         console.error("Error type:", typeof err);
         console.error("Error keys:", Object.keys(err || {}));
+        console.error("Full error:", JSON.stringify(err, null, 2));
+
         // error messages for debugging
         const errStr = String(err);
         if (errStr.includes("ECONNREFUSED") || errStr.includes("Failed to fetch")) {
