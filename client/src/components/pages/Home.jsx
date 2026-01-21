@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { UserContext } from "../App";
@@ -9,6 +9,11 @@ const Home = () => {
   const navigate = useNavigate();
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+
+  // Debug: Log when userId changes
+  useEffect(() => {
+    console.log("Home component - userId changed:", userId);
+  }, [userId]);
 
   const handleDifficultySelect = (difficultyData) => {
     setSelectedDifficulty(difficultyData);

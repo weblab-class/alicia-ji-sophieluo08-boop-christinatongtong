@@ -60,13 +60,22 @@ app.use(validator.checkRoutes);
 // allow us to process POST requests
 app.use(express.json());
 
+// Trust proxy for production (needed for Render/Heroku)
+app.set("trust proxy", 1);
+
 // set up a session, which will persist login data across requests
 app.use(
   session({
     // TODO: add a SESSION_SECRET string in your .env file, and replace the secret with process.env.SESSION_SECRET
-    secret: "session-secret",
+    secret: process.env.SESSION_SECRET || "session-secret",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production (HTTPS only)
+      httpOnly: true,
+      sameSite: "lax", // Helps with cross-site requests
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
   })
 );
 

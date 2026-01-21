@@ -34,6 +34,7 @@ const App = () => {
       .then((user) => {
         console.log("Login API response:", user);
         if (user && user._id) {
+          console.log("Setting userId to:", user._id);
           setUserId(user._id);
           post("/api/initsocket", { socketid: socket.id }).catch((err) => {
             console.error("Failed to initialize socket:", err);
@@ -44,6 +45,7 @@ const App = () => {
       })
       .catch((error) => {
         console.error("Login API error:", error);
+        alert("Login failed. Please check console for details.");
       });
   };
 
