@@ -131,7 +131,7 @@ const ColorGrid = () => {
       {phase === "gameover" && (
         <div className="gameover-container">
           <div className="phase-title">Time's up!</div>
-          
+
           <div className="comparison-container">
             {/* Original Grid */}
             <div className="comparison-section">
