@@ -30,7 +30,7 @@
 .play-button {
   font-size: 24px;
   font-weight: bold;
-  padding: 20px 40px;
+  padding: 20px 60px;
   background-color: white;
   color: black;
   border: none;
@@ -38,16 +38,25 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+  min-width: 200px;
 }
 
-.play-button:hover {
+.play-button:hover:not(.disabled):not(:disabled) {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
   background-color: #e0e0e0;
 }
 
-.play-button:active {
+.play-button:active:not(.disabled):not(:disabled) {
   transform: scale(0.98);
+}
+
+.play-button.disabled,
+.play-button:disabled {
+  background-color: #666;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Login Section */

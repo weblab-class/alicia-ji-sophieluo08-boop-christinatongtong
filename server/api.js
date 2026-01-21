@@ -165,13 +165,14 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
   game
     .save()
     .then((savedGame) => {
-      // return game info
+      // return game info (including pattern since users need to see it during memorization)
       res.send({
         gameId: savedGame._id,
         gridSize: savedGame.gridSize,
         difficulty: savedGame.difficulty,
         timeLimit: savedGame.timeLimit,
         colorBank: savedGame.colorBank,
+        correctPattern: savedGame.correctPattern, // Users need this to memorize
       });
     })
     .catch((err) => {
