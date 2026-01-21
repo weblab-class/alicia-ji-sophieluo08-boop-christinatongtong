@@ -30,10 +30,36 @@ const App = () => {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken);
     console.log(`Logged in as ${decodedCredential.name}`);
-    post("/api/login", { token: userToken }).then((user) => {
-      setUserId(user._id);
-      post("/api/initsocket", { socketid: socket.id });
-    });
+    post("/api/login", { token: userToken })
+      .then((user) => {
+        console.log("Login API response:", user);
+        if (user && user._id) {
+          console.log("Setting userId to:", user._id);
+          setUserId(user._id);
+          setTimeout(() => {
+            get("/api/whoami").then((verifiedUser) => {
+              console.log("Session verification:", verifiedUser);
+              if (verifiedUser && verifiedUser._id) {
+                console.log("Session confirmed, userId:", verifiedUser._id);
+                setUserId(verifiedUser._id);
+              } else {
+                console.error("Session not persisting!");
+              }
+            }).catch((err) => {
+              console.error("Session verification failed:", err);
+            });
+          }, 500);
+          post("/api/initsocket", { socketid: socket.id }).catch((err) => {
+            console.error("Failed to initialize socket:", err);
+          });
+        } else {
+          console.error("Login response missing user._id:", user);
+        }
+      })
+      .catch((error) => {
+        console.error("Login API error:", error);
+        alert("Login failed. Please check console for details.");
+      });
   };
 
   const handleLogout = () => {
