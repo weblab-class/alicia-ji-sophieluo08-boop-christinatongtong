@@ -1,15 +1,30 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { UserContext } from "../App";
+import DifficultySelector from "../modules/DifficultySelector";
 import "./Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
+  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
 
-  const handlePlayClick = () => {
-    navigate("/game");
+  const handleDifficultySelect = (difficultyData) => {
+    setSelectedDifficulty(difficultyData);
+  };
+
+  const handleStartGame = () => {
+    if (selectedDifficulty) {
+      // Navigate to game page with difficulty data in state
+      navigate("/game", {
+        state: {
+          difficulty: selectedDifficulty.difficulty,
+          gridSize: selectedDifficulty.gridSize,
+          timeLimit: selectedDifficulty.timeLimit,
+        },
+      });
+    }
   };
 
   const handleLogoutClick = () => {
@@ -32,8 +47,13 @@ const Home = () => {
           </div>
         ) : (
           <>
-            <button className="play-button" onClick={handlePlayClick}>
-              Play!
+            <DifficultySelector onDifficultySelect={handleDifficultySelect} />
+            <button
+              className={`play-button ${!selectedDifficulty ? "disabled" : ""}`}
+              onClick={handleStartGame}
+              disabled={!selectedDifficulty}
+            >
+              Start Game
             </button>
             <button className="logout-button" onClick={handleLogoutClick}>
               Logout

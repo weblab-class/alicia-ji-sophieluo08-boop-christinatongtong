@@ -2,29 +2,64 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ColorGrid.css";
 
-const ColorGrid = () => {
-  const navigate = useNavigate();
+// map color names to hex codes
+const COLOR_MAP = {
+  red: "#FF6B6B",
+  blue: "#4ECDC4",
+  green: "#73A580",
+  yellow: "#FFE66D",
+  purple: "#B4A7D6",
+  orange: "#FFA07A",
+};
 
-  const colors = [
-    "#FF6B6B", // Red
-    "#4ECDC4", // Teal
-    "#FFE66D", // Yellow
-    "#95E1D3", // Mint
-  ];
+const ColorGrid = ({ gameId, gridSize, timeLimit, colorBank, correctPattern }) => {
+  // Safety check - if required props are not provided, return early
+  if (!gridSize || !correctPattern || !colorBank) {
+    console.log("ColorGrid missing props:", { gridSize, correctPattern, colorBank });
+    return (
+      <div className="color-grid-wrapper">
+        <div style={{ color: "#333", fontSize: "20px", padding: "20px" }}>
+          Loading game data...
+        </div>
+      </div>
+    );
+  }
 
-  const generateRandomGrid = () => {
-    return Array(9)
-      .fill(null)
-      .map(() => colors[Math.floor(Math.random() * colors.length)]);
-  };
+const totalSquares = gridSize * gridSize;
+const navigate = useNavigate();
+
+const colors = [
+  "#FF6B6B", // Red
+  "#4ECDC4", // Teal
+  "#FFE66D", // Yellow
+  "#95E1D3", // Mint
+];
+
+const generateRandomGrid = () => {
+  return Array(9)
+    .fill(null)
+    .map(() => colors[Math.floor(Math.random() * colors.length)]);
+};
 
   const [phase, setPhase] = useState("memorize"); // memorize, play, gameover
-  const [timer, setTimer] = useState(10); // 10 seconds for memorize phase
-  const [playTimer, setPlayTimer] = useState(60); // 60 seconds for play phase
+  const [timer, setTimer] = useState(timeLimit || 20);
+  const [playTimer, setPlayTimer] = useState(60);
   const [originalGrid, setOriginalGrid] = useState(() => generateRandomGrid()); // Random 3x3 grid to memorize
-  const [userGrid, setUserGrid] = useState(Array(9).fill(null)); // Empty grid for user to fill
-  const [selectedColor, setSelectedColor] = useState(null); // Currently selected color
+  const [userGrid, setUserGrid] = useState(Array(totalSquares).fill(null));
+  const [selectedColor, setSelectedColor] = useState(null);
   const [showColorGrid, setShowColorGrid] = useState(true); // Show colored grid during memorize phase
+
+  const paletteColors = colorBank ? colorBank.map(name => ({
+    name: name,
+    hex: COLOR_MAP[name] || "#CCCCCC"
+  })) : [];
+
+  // initialize timer with timeLimit from props
+  useEffect(() => {
+    if (timeLimit) {
+      setTimer(timeLimit);
+    }
+  }, [timeLimit]);
 
   // Memorize phase timer
   useEffect(() => {
@@ -82,6 +117,10 @@ const ColorGrid = () => {
     setPhase("gameover");
   };
 
+  const getColorHex = (colorName) => {
+    return colorName ? (COLOR_MAP[colorName] || "#CCCCCC") : "#f5f5f5";
+  };
+
   const handlePlayAgain = () => {
     setPhase("memorize");
     setTimer(10);
@@ -99,22 +138,32 @@ const ColorGrid = () => {
   const isGridFull = userGrid.every((color) => color !== null);
   const { correctMatches, percentage } = calculateScore();
 
+  // Create grid style based on gridSize
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+    gap: "8px",
+  };
+
   return (
     <div className="color-grid-wrapper">
       <div className="timer-display">{phase === "memorize" ? timer : playTimer}s</div>
 
-      {/* Memorize Phase - Show colored grid */}
-      {phase === "memorize" && showColorGrid && (
+      {phase === "memorize" && showColorGrid && correctPattern && (
         <div className="color-grid-container">
           <div className="phase-title">Memorize the colors!</div>
-          <div className="color-grid">
-            {originalGrid.map((color, index) => (
-              <div
-                key={index}
-                className="color-cell"
-                style={{ backgroundColor: color }}
-              ></div>
-            ))}
+          <div className="color-grid" style={gridStyle}>
+            {Array.from({ length: totalSquares }, (_, index) => {
+              const colorName = correctPattern[index.toString()];
+              const hexColor = colorName ? COLOR_MAP[colorName] || "#CCCCCC" : "#f5f5f5";
+              return (
+                <div
+                  key={index}
+                  className="color-cell"
+                  style={{ backgroundColor: hexColor }}
+                ></div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -126,15 +175,15 @@ const ColorGrid = () => {
 
           {/* Empty grid for user to fill */}
           <div className="color-grid-container">
-            <div className="color-grid">
-              {userGrid.map((color, index) => (
+            <div className="color-grid" style={gridStyle}>
+              {userGrid.map((colorName, index) => (
                 <div
                   key={index}
                   className={`play-cell ${selectedColor ? "clickable" : ""}`}
-                  style={{ backgroundColor: color || "#f5f5f5" }}
+                  style={{ backgroundColor: getColorHex(colorName) }}
                   onClick={() => handleGridCellClick(index)}
                 >
-                  {!color && selectedColor && <div className="click-hint">+</div>}
+                  {!colorName && selectedColor && <div className="click-hint">+</div>}
                 </div>
               ))}
             </div>
@@ -144,12 +193,12 @@ const ColorGrid = () => {
           <div className="color-palette">
             <div className="palette-label">Select a color:</div>
             <div className="palette-grid">
-              {colors.map((color, index) => (
+              {paletteColors.map((color, index) => (
                 <div
                   key={index}
-                  className={`palette-color ${selectedColor === color ? "selected" : ""}`}
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleColorPaletteClick(color)}
+                  className={`palette-color ${selectedColor === color.name ? "selected" : ""}`}
+                  style={{ backgroundColor: color.hex }}
+                  onClick={() => handleColorPaletteClick(color.name)}
                 ></div>
               ))}
             </div>
@@ -216,7 +265,5 @@ const ColorGrid = () => {
         </div>
       )}
     </div>
-  );
+  )
 };
-
-export default ColorGrid;
