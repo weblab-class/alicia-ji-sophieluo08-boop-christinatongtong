@@ -17,16 +17,16 @@ const Game = () => {
   const difficultyData = location.state;
 
   useEffect(() => {
-    // if no difficulty data, then redirect to home page
-    if (!difficultyData) {
-      navigate("/");
-      return;
-    }
-
-    // check if user is logged in
+    // check if user is logged in first
     if (!userId) {
       setError("Please log in to play the game.");
       setLoading(false);
+      return;
+    }
+
+    // if no difficulty data, redirect to home page
+    if (!difficultyData) {
+      navigate("/");
       return;
     }
 
@@ -42,15 +42,20 @@ const Game = () => {
         setGameData(response);
       } catch (err) {
         console.error("Error creating game:", err);
+        console.error("Error type:", typeof err);
+        console.error("Error keys:", Object.keys(err || {}));
         // error messages for debugging
-        if (err.includes("ECONNREFUSED") || err.includes("Failed to fetch")) {
+        const errStr = String(err);
+        if (errStr.includes("ECONNREFUSED") || errStr.includes("Failed to fetch")) {
           setError("Cannot connect to server. Please make sure the server is running.");
-        } else if (err.includes("401") || err.includes("403")) {
+        } else if (errStr.includes("401") || errStr.includes("403")) {
           setError("Authentication required. Please log in to play.");
-        } else if (err.includes("400")) {
+        } else if (errStr.includes("404")) {
+          setError("Game creation endpoint not found (404). Server may not be running properly.");
+        } else if (errStr.includes("400")) {
           setError("Invalid game parameters. Please try selecting a difficulty again.");
         } else {
-          setError(`Failed to create game: ${err}`);
+          setError(`Failed to create game: ${errStr}`);
         }
       } finally {
         setLoading(false);

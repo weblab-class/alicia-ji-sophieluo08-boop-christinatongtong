@@ -1,8 +1,39 @@
+// Color name to hex mapping for comparison phase
+const COLOR_MAP = {
+  red: "#FF6B6B",
+  blue: "#4ECDC4",
+  yellow: "#FFE66D",
+  green: "#73A580",
+  purple: "#B4A7D6",
+  orange: "#FFA07A",
+};
+// Helper to map color names to hex
+const getColorHex = (color) => {
+  if (!color) return "#f5f5f5";
+  const colorMap = {
+    red: "#FF6B6B",
+    blue: "#4ECDC4",
+    yellow: "#FFE66D",
+    green: "#73A580",
+    purple: "#B4A7D6",
+    orange: "#FFA07A",
+    // fallback for direct hex
+  };
+  return colorMap[color] || color;
+};
 import React, { useState, useEffect } from "react";
 import "./ColorGrid.css";
 
-const ColorGrid = () => {
-  const colors = [
+const ColorGrid = ({
+  gameId,
+  gridSize,
+  timeLimit,
+  colorBank,
+  correctPattern,
+  difficulty
+}) => {
+  // Use colorBank from props, fallback to default if missing
+  const defaultColors = [
     "#FF6B6B", // Red
     "#4ECDC4", // Teal
     "#FFE66D", // Yellow
@@ -13,11 +44,23 @@ const ColorGrid = () => {
     "#73A580", // Green
     "#FFA07A", // Light Salmon
   ];
+  const colors = colorBank && colorBank.length > 0 ? colorBank.map((c) => {
+    // If colorBank is color names, map to hex, else use as is
+    const colorMap = {
+      red: "#FF6B6B",
+      blue: "#4ECDC4",
+      yellow: "#FFE66D",
+      green: "#73A580",
+      purple: "#B4A7D6",
+      orange: "#FFA07A",
+    };
+    return colorMap[c] || c;
+  }) : defaultColors;
 
   const [phase, setPhase] = useState("memorize"); // memorize, play
-  const [timer, setTimer] = useState(10); // 10 seconds for memorize phase
+  const [timer, setTimer] = useState(timeLimit || 10); // use timeLimit from props
   const [playTimer, setPlayTimer] = useState(60); // 60 seconds for play phase
-  const [userGrid, setUserGrid] = useState(Array(9).fill(null)); // Empty grid for user to fill
+  const [userGrid, setUserGrid] = useState(Array(gridSize * gridSize).fill(null)); // Empty grid for user to fill
   const [selectedColor, setSelectedColor] = useState(null); // Currently selected color
   const [showColorGrid, setShowColorGrid] = useState(true); // Show colored grid during memorize phase
 
@@ -31,7 +74,7 @@ const ColorGrid = () => {
     } else if (phase === "memorize" && timer === 0) {
       setShowColorGrid(false);
       setPhase("play");
-      setPlayTimer(60);
+      setPlayTimer(15);
     }
   }, [phase, timer]);
 
@@ -69,10 +112,10 @@ const ColorGrid = () => {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  const totalCells = solutionGrid.length;
+  const totalCells = userGrid.length;
   const filledCells = userGrid.filter((c) => c !== null).length;
 
-  const score = (filledCells / totalCells) * 100;
+  //const score = (filledCells / totalCells) * 100;
 
   const handleGoHome = () => {
     navigate("/");
@@ -82,13 +125,13 @@ const ColorGrid = () => {
 
   const calculateScore = () => {
     let correctMatches = 0;
-    for (let i = 0; i < totalSquares; i++) {
+    for (let i = 0; i < userGrid.length; i++) {
       const expected = correctPattern[i.toString()];
-      if (userGrid[i] && expected && userGrid[i] === expected) {
+      if (userGrid[i] && expected && getColorHex(userGrid[i]) === getColorHex(expected)) {
         correctMatches++;
       }
     }
-    const percentage = Math.round((correctMatches / totalSquares) * 100);
+    const percentage = Math.round((correctMatches / userGrid.length) * 100);
     return { correctMatches, percentage };
   };
 
@@ -108,14 +151,27 @@ const ColorGrid = () => {
       {phase === "memorize" && showColorGrid && (
         <div className="color-grid-container">
           <div className="phase-title">Memorize the colors!</div>
-          <div className="color-grid">
-            {colors.map((color, index) => (
-              <div
-                key={index}
-                className="color-cell"
-                style={{ backgroundColor: color }}
-              ></div>
-            ))}
+          <div className="color-grid" style={gridStyle}>
+            {Array.from({ length: gridSize * gridSize }, (_, index) => {
+              const colorName = correctPattern[index.toString()];
+              // Map color name to hex
+              const colorMap = {
+                red: "#FF6B6B",
+                blue: "#4ECDC4",
+                yellow: "#FFE66D",
+                green: "#73A580",
+                purple: "#B4A7D6",
+                orange: "#FFA07A",
+              };
+              const colorHex = colorMap[colorName] || colorName || "#f5f5f5";
+              return (
+                <div
+                  key={index}
+                  className="color-cell"
+                  style={{ backgroundColor: colorHex }}
+                ></div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -127,12 +183,12 @@ const ColorGrid = () => {
 
           {/* Empty grid for user to fill */}
           <div className="color-grid-container">
-            <div className="color-grid">
+            <div className="color-grid" style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}>
               {userGrid.map((color, index) => (
                 <div
                   key={index}
-                  className={`play-cell ${selectedColor ? "clickable" : ""} ${colorName ? "filled" : ""}`}
-                  style={{ backgroundColor: colorName ? getColorHex(colorName) : "#f5f5f5" }}
+                  className={`play-cell ${selectedColor ? "clickable" : ""} ${color ? "filled" : ""}`}
+                  style={{ backgroundColor: color ? getColorHex(color) : "#f5f5f5" }}
                   onClick={() => handleGridCellClick(index)}
                 >
                   {!color && selectedColor && <div className="click-hint">+</div>}
@@ -155,6 +211,11 @@ const ColorGrid = () => {
               ))}
             </div>
           </div>
+
+          {/* Done button appears when all squares are filled */}
+          {userGrid.every((c) => c !== null) && (
+            <button className="done-btn" onClick={() => setPhase("gameover")}>Done</button>
+          )}
         </div>
       )}
 
@@ -168,7 +229,7 @@ const ColorGrid = () => {
             <div className="comparison-section">
               <div className="comparison-label">Original</div>
               <div className="color-grid" style={gridStyle}>
-                {Array.from({ length: totalSquares }, (_, index) => {
+                {Array.from({ length: userGrid.length }, (_, index) => {
                   const expected = correctPattern[index.toString()];
                   const hex = expected ? (COLOR_MAP[expected] || "#CCCCCC") : "#f5f5f5";
                   return (
@@ -196,11 +257,11 @@ const ColorGrid = () => {
           <div className="score-details">
             <div className="score-title">Your Score</div>
             <div className="score-percentage">{percentage}%</div>
-            <div className="score-matches">{correctMatches} out of {totalSquares} correct</div>
+            <div className="score-matches">{correctMatches} out of {userGrid.length} correct</div>
           </div>
 
           <div className="button-group">
-            <button className="play-again-btn" onClick={handlePlayAgain}>
+            <button className="play-again-btn" onClick={() => window.location.href = "/"}>
               Play Again
             </button>
 
