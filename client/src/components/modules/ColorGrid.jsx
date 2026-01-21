@@ -22,6 +22,7 @@ const getColorHex = (color) => {
   return colorMap[color] || color;
 };
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ColorGrid.css";
 
 const ColorGrid = ({
@@ -38,11 +39,6 @@ const ColorGrid = ({
     "#4ECDC4", // Teal
     "#FFE66D", // Yellow
     "#95E1D3", // Mint
-    "#C7CEEA", // Lavender
-    "#FF8B94", // Pink
-    "#B4A7D6", // Purple
-    "#73A580", // Green
-    "#FFA07A", // Light Salmon
   ];
   const colors = colorBank && colorBank.length > 0 ? colorBank.map((c) => {
     // If colorBank is color names, map to hex, else use as is
@@ -56,6 +52,12 @@ const ColorGrid = ({
     };
     return colorMap[c] || c;
   }) : defaultColors;
+
+  const generateRandomGrid = () => {
+    return Array(9)
+      .fill(null)
+      .map(() => colors[Math.floor(Math.random() * colors.length)]);
+  };
 
   const [phase, setPhase] = useState("memorize"); // memorize, play
   const [timer, setTimer] = useState(timeLimit || 10); // use timeLimit from props
@@ -91,6 +93,7 @@ const ColorGrid = ({
     }
   }, [phase, playTimer]);
 
+
   const handleColorPaletteClick = (color) => {
     setSelectedColor(selectedColor === color ? null : color);
   };
@@ -102,9 +105,23 @@ const ColorGrid = ({
         newGrid[index] = selectedColor;
         return newGrid;
       });
-      setSelectedColor(null);
+      //setSelectedColor(null);
     }
   };
+
+  const handlePlayAgain = () => {
+    setPhase("memorize");
+    setTimer(10);
+    setPlayTimer(60);
+    setOriginalGrid(generateRandomGrid());
+    setUserGrid(Array(9).fill(null));
+    setSelectedColor(null);
+    setShowColorGrid(true);
+  };
+
+  // const handleGoHome = () => {
+  //   navigate("/");
+  // };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
