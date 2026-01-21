@@ -1,8 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./components/App";
+import Home from "./components/pages/Home";
+import Game from "./components/pages/Game";
 import Skeleton from "./components/pages/Skeleton";
 import NotFound from "./components/pages/NotFound";
+import GameResult from "./components/modules/GameResult";
+import Profile from "./components/pages/Profile";
 
 import {
   createBrowserRouter,
@@ -14,12 +18,15 @@ import {
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 //TODO: REPLACE WITH YOUR OWN CLIENT_ID
-const GOOGLE_CLIENT_ID = "FILL ME IN";
+const GOOGLE_CLIENT_ID = "1084082613256-9ape9igb99jvaq1nja075h3tnvet76aj.apps.googleusercontent.com";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route errorElement={<NotFound />} element={<App />}>
-      <Route path="/" element={<Skeleton />}/>
+      <Route path="/" element={<Home />} />
+      <Route path="/game" element={<Game />} />
+      <Route path="/game-result" element={<GameResult score={67} accuracy={67} time={67} onPlayAgain={() => {}} />} />
+      <Route path="/profile" element={<Profile name="Beaver Tim" email="beavertim@mit.edu" bestScore={67} />} />
     </Route>
   )
 )
