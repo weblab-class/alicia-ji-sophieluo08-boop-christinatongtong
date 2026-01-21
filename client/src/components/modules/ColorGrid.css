@@ -143,6 +143,28 @@
   transform: scale(1.15);
 }
 
+/* Done Button */
+.done-btn {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 40px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.done-btn:hover {
+  background-color: #5568d3;
+  transform: scale(1.05);
+}
+
+.done-btn:active {
+  transform: scale(0.98);
+}
+
 /* Game Over Styles */
 .gameover-container {
   display: flex;
