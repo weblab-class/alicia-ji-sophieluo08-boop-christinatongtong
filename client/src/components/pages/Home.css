@@ -25,6 +25,17 @@
   margin: 0;
   text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.app-logo {
+  width: 100px;
+  height: 100px;
+  filter: brightness(0) invert(1); /* Makes the image white */
+  object-fit: contain;
 }
 
 .play-button {
@@ -102,6 +113,11 @@
 @media (max-width: 768px) {
   .app-title {
     font-size: 80px;
+  }
+
+  .app-logo {
+    width: 70px;
+    height: 70px;
   }
 
   .home-content {

@@ -35,7 +35,14 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-content">
-        <h1 className="app-title">FILL</h1>
+        <h1 className="app-title">
+          <img 
+            src="/paint_bucket.png" 
+            alt="Paint bucket" 
+            className="app-logo"
+          />
+          PALETTE
+        </h1>
 
         {!userId ? (
           <div className="login-section">
