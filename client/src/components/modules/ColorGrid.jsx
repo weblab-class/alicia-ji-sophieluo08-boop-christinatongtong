@@ -122,6 +122,13 @@ const ColorGrid = ({
     navigate("/");
   };
 
+  const handleReady = () => {
+    // skip remaining memorization time and move to play phase
+    setShowColorGrid(false);
+    setPhase("play");
+    setPlayTimer(15);
+  };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -130,7 +137,7 @@ const ColorGrid = ({
 
   // Check if all regions are filled
   const isGridFull = Object.keys(fills).length === svgRegionCount &&
-                     Object.values(fills).every((color) => color !== null);
+    Object.values(fills).every((color) => color !== null);
 
   // Calculate score based on fills object and actual SVG regions
   const calculateScore = () => {
@@ -182,12 +189,15 @@ const ColorGrid = ({
           <DrawingGrid
             selectedColor={null}
             correctPattern={correctPattern}
-            onFillsChange={() => {}} // No interaction during memorization
+            onFillsChange={() => { }} // No interaction during memorization
             isPaused={true}
             gridSize={gridSize}
             svgPath="/drawings/bear.svg"
             showCorrectColors={true} // Show the correct colors during memorization
           />
+          <button className="ready-btn" onClick={handleReady}>
+            Ready
+          </button>
         </div>
       )}
 
@@ -253,7 +263,7 @@ const ColorGrid = ({
               <DrawingGrid
                 selectedColor={null}
                 correctPattern={correctPattern}
-                onFillsChange={() => {}}
+                onFillsChange={() => { }}
                 isPaused={true}
                 gridSize={gridSize}
                 svgPath="/drawings/bear.svg"
@@ -267,7 +277,7 @@ const ColorGrid = ({
               <DrawingGrid
                 selectedColor={null}
                 correctPattern={correctPattern}
-                onFillsChange={() => {}}
+                onFillsChange={() => { }}
                 isPaused={true}
                 gridSize={gridSize}
                 svgPath="/drawings/bear.svg"

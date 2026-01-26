@@ -114,6 +114,7 @@
   justify-content: center;
   margin: 0 auto 24px auto;
 }
+
 /*the "hole" in a palette*/
 /*.color-palette::before {
   content: '';
@@ -173,6 +174,7 @@
   left: 80px;
   top: 20px;
 }
+
 .color-palette.difficulty-medium .palette-color:nth-child(1) {
   left: 140px;
 }
@@ -182,21 +184,25 @@
   left: 190px;
   top: 58px;
 }
+
 /*green*/
 .palette-color:nth-child(3) {
   left: 155px;
   top: 115px;
 }
+
 /*yellow*/
 .palette-color:nth-child(4) {
   left: 86px;
   top: 115px;
 }
+
 /* purple*/
 .palette-color:nth-child(5) {
   left: 30px;
   top: 90px;
 }
+
 /*orange*/
 .palette-color:nth-child(6) {
   left: 140px;
@@ -256,6 +262,29 @@
 }
 
 .pause-btn:active {
+  transform: scale(0.98);
+}
+
+/* Ready Button */
+.ready-btn {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 40px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.ready-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.ready-btn:active {
   transform: scale(0.98);
 }
 
