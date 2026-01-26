@@ -69,7 +69,6 @@ const DifficultySelector = ({ onDifficultySelect }) => {
                 <span className="detail-value">{difficulty.colorBank}</span>
               </div>
             </div>
-            <div className="difficulty-description">{difficulty.description}</div>
           </div>
         ))}
       </div>

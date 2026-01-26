@@ -1,15 +1,16 @@
 .difficulty-selector {
   width: 100%;
-  max-width: 800px;
+  max-width: 500px;
   margin: 0 auto;
 }
 
 .difficulty-title {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: bold;
   color: white;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+  margin-top: 0;
   text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
 }
 
@@ -45,17 +46,17 @@
 }
 
 .difficulty-name {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
 .difficulty-details {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 12px;
-  padding: 12px 0;
+  margin-bottom: 0;
+  padding: 8px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -68,19 +69,19 @@
 }
 
 .detail-label {
-  font-size: 14px;
+  font-size: 12px;
   opacity: 0.8;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .detail-value {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 }
 
 .difficulty-description {
-  font-size: 16px;
+  font-size: 12px;
   text-align: center;
   opacity: 0.9;
   margin-top: 8px;

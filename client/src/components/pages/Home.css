@@ -103,7 +103,8 @@
 .app-logo {
   width: 100px;
   height: 100px;
-  filter: brightness(0) invert(1); /* Makes the image white */
+  filter: brightness(0) invert(1);
+  /* Makes the image white */
   object-fit: contain;
 }
 
