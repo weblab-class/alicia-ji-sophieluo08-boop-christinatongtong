@@ -68,6 +68,32 @@
   width: 100%;
 }
 
+.play-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Make drawing slightly larger only in play phase */
+.play-content-wrapper .color-grid-container>div {
+  max-width: 550px !important;
+  width: 550px !important;
+}
+
+.play-content-wrapper .color-grid-container .drawing-svg {
+  max-width: 550px !important;
+  width: 550px !important;
+}
+
+.palette-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .play-cell {
   width: 100%;
   aspect-ratio: 1;

@@ -212,31 +212,33 @@ const ColorGrid = ({
         <div className="play-phase-container">
           <div className="phase-title">Fill the grid!</div>
 
-          {/* DrawingGrid component */}
-          <div className="color-grid-container">
-            <DrawingGrid
-              selectedColor={selectedColor}
-              correctPattern={correctPattern}
-              onFillsChange={handleFillsChange}
-              isPaused={isPaused}
-              gridSize={gridSize}
-              svgPath={svgPath}
-              showCorrectColors={false}
-            />
-          </div>
+          <div className="play-content-wrapper">
+            {/* DrawingGrid component */}
+            <div className="color-grid-container">
+              <DrawingGrid
+                selectedColor={selectedColor}
+                correctPattern={correctPattern}
+                onFillsChange={handleFillsChange}
+                isPaused={isPaused}
+                gridSize={gridSize}
+                svgPath={svgPath}
+                showCorrectColors={false}
+              />
+            </div>
 
-          {/* Color palette */}
-          <div style={{ marginTop: "40px" }}>
-            <div className={`color-palette ${difficulty ? `difficulty-${difficulty}` : ""}`}>
-              <div className="palette-grid">
-                {colors.map((color, index) => (
-                  <div
-                    key={index}
-                    className={`palette-color ${selectedColor === color ? "selected" : ""}`}
-                    style={{ backgroundColor: color }}
-                    onClick={() => !isPaused && handleColorPaletteClick(color)}
-                  ></div>
-                ))}
+            {/* Color palette */}
+            <div className="palette-wrapper">
+              <div className={`color-palette ${difficulty ? `difficulty-${difficulty}` : ""}`}>
+                <div className="palette-grid">
+                  {colors.map((color, index) => (
+                    <div
+                      key={index}
+                      className={`palette-color ${selectedColor === color ? "selected" : ""}`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => !isPaused && handleColorPaletteClick(color)}
+                    ></div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
