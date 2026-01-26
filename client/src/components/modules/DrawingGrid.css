@@ -1,0 +1,24 @@
+.drawing-grid-wrapper {
+  width: 100%;
+  max-width: 420px;
+  margin: 20px auto;
+  border: 2px solid #ccc; /* debug: see container */
+}
+
+.drawing-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #fafafa;
+  border: 1px solid #ddd;
+}
+
+.drawing-region {
+  cursor: url('/cursors/paintbrush.png') 8 24, pointer;
+  transition: opacity 0.15s ease, stroke 0.15s ease;
+}
+
+.drawing-region:hover path {
+  opacity: 0.9;
+  stroke: #222;
+}

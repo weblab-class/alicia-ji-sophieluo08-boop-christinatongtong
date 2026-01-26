@@ -1,3 +1,8 @@
+import DrawingGrid from "./DrawingGrid";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import "./ColorGrid.css";
+
 // Color name to hex mapping for comparison phase
 const COLOR_MAP = {
   red: "#FF6B6B",
@@ -7,6 +12,7 @@ const COLOR_MAP = {
   purple: "#B4A7D6",
   orange: "#FFA07A",
 };
+
 // Helper to map color names to hex
 const getColorHex = (color) => {
   if (!color) return "#f5f5f5";
@@ -17,13 +23,9 @@ const getColorHex = (color) => {
     green: "#73A580",
     purple: "#B4A7D6",
     orange: "#FFA07A",
-    // fallback for direct hex
   };
   return colorMap[color] || color;
 };
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./ColorGrid.css";
 
 const ColorGrid = ({
   gameId,
@@ -33,6 +35,8 @@ const ColorGrid = ({
   correctPattern,
   difficulty
 }) => {
+  const navigate = useNavigate();
+
   // Use colorBank from props, fallback to default if missing
   const defaultColors = [
     "#FF6B6B", // Red
@@ -40,8 +44,8 @@ const ColorGrid = ({
     "#FFE66D", // Yellow
     "#95E1D3", // Mint
   ];
+
   const colors = colorBank && colorBank.length > 0 ? colorBank.map((c) => {
-    // If colorBank is color names, map to hex, else use as is
     const colorMap = {
       red: "#FF6B6B",
       blue: "#4ECDC4",
@@ -53,18 +57,16 @@ const ColorGrid = ({
     return colorMap[c] || c;
   }) : defaultColors;
 
-  const generateRandomGrid = () => {
-    return Array(9)
-      .fill(null)
-      .map(() => colors[Math.floor(Math.random() * colors.length)]);
-  };
+  const [phase, setPhase] = useState("memorize"); // memorize, play, gameover
+  const [timer, setTimer] = useState(timeLimit || 10);
+  const [playTimer, setPlayTimer] = useState(15);
+  const [fills, setFills] = useState({}); // Changed from userGrid to fills
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [showColorGrid, setShowColorGrid] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [svgRegionCount, setSvgRegionCount] = useState(gridSize * gridSize); // Track actual region count
 
-  const [phase, setPhase] = useState("memorize"); // memorize, play
-  const [timer, setTimer] = useState(timeLimit || 10); // use timeLimit from props
-  const [playTimer, setPlayTimer] = useState(60); // 60 seconds for play phase
-  const [userGrid, setUserGrid] = useState(Array(gridSize * gridSize).fill(null)); // Empty grid for user to fill
-  const [selectedColor, setSelectedColor] = useState(null); // Currently selected color
-  const [showColorGrid, setShowColorGrid] = useState(true); // Show colored grid during memorize phase
+  const playIntervalRef = useRef(null);
 
   // Memorize phase timer
   useEffect(() => {
@@ -80,48 +82,45 @@ const ColorGrid = ({
     }
   }, [phase, timer]);
 
-  // Play phase timer
+  // Play phase timer with pause logic
   useEffect(() => {
-    if (phase === "play" && playTimer > 0) {
-      const interval = setInterval(() => {
+    if (phase === "play" && playTimer > 0 && !isPaused) {
+      playIntervalRef.current = setInterval(() => {
         setPlayTimer((prev) => prev - 1);
       }, 1000);
-      return () => clearInterval(interval);
-    } else if (phase === "play" && playTimer === 0) {
-      // Game ends
-      setPhase("gameover");
+      return () => clearInterval(playIntervalRef.current);
+    } else if (phase === "play" && (isPaused || playTimer === 0)) {
+      clearInterval(playIntervalRef.current);
+      if (playTimer === 0) setPhase("gameover");
     }
-  }, [phase, playTimer]);
+    return () => clearInterval(playIntervalRef.current);
+  }, [phase, playTimer, isPaused]);
 
+  // Callback to receive fills from DrawingGrid
+  const handleFillsChange = (newFills) => {
+    setFills(newFills);
+    // Update region count based on actual fills
+    const regionCount = Object.keys(newFills).length;
+    if (regionCount > 0) {
+      setSvgRegionCount(regionCount);
+    }
+  };
 
   const handleColorPaletteClick = (color) => {
     setSelectedColor(selectedColor === color ? null : color);
   };
 
-  const handleGridCellClick = (index) => {
-    if (selectedColor && phase === "play") {
-      setUserGrid((prev) => {
-        const newGrid = [...prev];
-        newGrid[index] = selectedColor;
-        return newGrid;
-      });
-      //setSelectedColor(null);
-    }
+  const handlePause = () => {
+    setIsPaused(true);
   };
 
-  const handlePlayAgain = () => {
-    setPhase("memorize");
-    setTimer(10);
-    setPlayTimer(60);
-    setOriginalGrid(generateRandomGrid());
-    setUserGrid(Array(9).fill(null));
-    setSelectedColor(null);
-    setShowColorGrid(true);
+  const handleRestart = () => {
+    setIsPaused(false);
   };
 
-  // const handleGoHome = () => {
-  //   navigate("/");
-  // };
+  const handleGoHome = () => {
+    navigate("/");
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -129,30 +128,30 @@ const ColorGrid = ({
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  const totalCells = userGrid.length;
-  const filledCells = userGrid.filter((c) => c !== null).length;
+  // Check if all regions are filled
+  const isGridFull = Object.keys(fills).length === svgRegionCount &&
+                     Object.values(fills).every((color) => color !== null);
 
-  //const score = (filledCells / totalCells) * 100;
-
-  const handleGoHome = () => {
-    navigate("/");
-  };
-
-  const isGridFull = userGrid.every((color) => color !== null);
-
+  // Calculate score based on fills object and actual SVG regions
   const calculateScore = () => {
     let correctMatches = 0;
-    for (let i = 0; i < userGrid.length; i++) {
-      const expected = correctPattern[i.toString()];
-      if (userGrid[i] && expected && getColorHex(userGrid[i]) === getColorHex(expected)) {
+
+    // Count matches based on actual filled regions
+    Object.keys(fills).forEach((id) => {
+      const expected = correctPattern[id];
+      const userColor = fills[id];
+
+      if (userColor && expected && getColorHex(userColor) === getColorHex(expected)) {
         correctMatches++;
       }
-    }
-    const percentage = Math.round((correctMatches / userGrid.length) * 100);
+    });
+
+    const percentage = Math.round((correctMatches / svgRegionCount) * 100);
     return { correctMatches, percentage };
   };
 
   const { correctMatches, percentage } = calculateScore();
+
   // Create grid style based on gridSize
   const gridStyle = {
     display: "grid",
@@ -162,76 +161,82 @@ const ColorGrid = ({
 
   return (
     <div className="color-grid-wrapper">
-      <div className="timer-display">{phase === "memorize" ? timer : playTimer}s</div>
+      <div className="timer-display">
+        {phase === "memorize" ? timer : playTimer}s
+        {phase === "play" && !isPaused && (
+          <button className="pause-btn" onClick={handlePause}>
+            Pause
+          </button>
+        )}
+        {phase === "play" && isPaused && (
+          <button className="pause-btn" onClick={handleRestart}>
+            Resume
+          </button>
+        )}
+      </div>
 
-      {/* Memorize Phase - Show colored grid */}
+      {/* Memorize Phase - Show colored drawing */}
       {phase === "memorize" && showColorGrid && (
         <div className="color-grid-container">
           <div className="phase-title">Memorize the colors!</div>
-          <div className="color-grid" style={gridStyle}>
-            {Array.from({ length: gridSize * gridSize }, (_, index) => {
-              const colorName = correctPattern[index.toString()];
-              // Map color name to hex
-              const colorMap = {
-                red: "#FF6B6B",
-                blue: "#4ECDC4",
-                yellow: "#FFE66D",
-                green: "#73A580",
-                purple: "#B4A7D6",
-                orange: "#FFA07A",
-              };
-              const colorHex = colorMap[colorName] || colorName || "#f5f5f5";
-              return (
-                <div
-                  key={index}
-                  className="color-cell"
-                  style={{ backgroundColor: colorHex }}
-                ></div>
-              );
-            })}
-          </div>
+          <DrawingGrid
+            selectedColor={null}
+            correctPattern={correctPattern}
+            onFillsChange={() => {}} // No interaction during memorization
+            isPaused={true}
+            gridSize={gridSize}
+            svgPath="/drawings/bear.svg"
+            showCorrectColors={true} // Show the correct colors during memorization
+          />
         </div>
       )}
 
-      {/* Play Phase - Empty grid + color palette */}
+      {/* Play Phase - Grid and palette */}
       {phase === "play" && (
         <div className="play-phase-container">
-          <div className="phase-title">Fill the grid!</div>
-
-          {/* Empty grid for user to fill */}
-          <div className="color-grid-container">
-            <div className="color-grid" style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}>
-              {userGrid.map((color, index) => (
-                <div
-                  key={index}
-                  className={`play-cell ${selectedColor ? "clickable" : ""} ${color ? "filled" : ""}`}
-                  style={{ backgroundColor: color ? getColorHex(color) : "#f5f5f5" }}
-                  onClick={() => handleGridCellClick(index)}
-                >
-                  {!color && selectedColor && <div className="click-hint">+</div>}
-                </div>
-              ))}
+          {isPaused && (
+            <div className="phase-title" style={{ color: "#888", marginBottom: "10px" }}>
+              Paused - click Resume to continue
             </div>
+          )}
+          {!isPaused && (
+            <div className="phase-title">Fill the grid!</div>
+          )}
+
+          {/* DrawingGrid component */}
+          <div className="color-grid-container">
+            <DrawingGrid
+              selectedColor={selectedColor}
+              correctPattern={correctPattern}
+              onFillsChange={handleFillsChange}
+              isPaused={isPaused}
+              gridSize={gridSize}
+              svgPath="/drawings/bear.svg"
+              showCorrectColors={false}
+            />
           </div>
 
           {/* Color palette */}
-          <div className="color-palette">
-            <div className="palette-label">Select a color:</div>
-            <div className="palette-grid">
-              {colors.map((color, index) => (
-                <div
-                  key={index}
-                  className={`palette-color ${selectedColor === color ? "selected" : ""}`}
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleColorPaletteClick(color)}
-                ></div>
-              ))}
+          <div style={{ marginTop: "40px" }}>
+            <div className={`color-palette ${difficulty ? `difficulty-${difficulty}` : ""}`}>
+              <div className="palette-grid">
+                {colors.map((color, index) => (
+                  <div
+                    key={index}
+                    className={`palette-color ${selectedColor === color ? "selected" : ""}`}
+                    style={{ backgroundColor: color }}
+                    onClick={() => !isPaused && handleColorPaletteClick(color)}
+                  ></div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Done button appears when all squares are filled */}
-          {userGrid.every((c) => c !== null) && (
-            <button className="done-btn" onClick={() => setPhase("gameover")}>Done</button>
+          {/* Done button appears when all squares are filled and not paused */}
+          {isGridFull && !isPaused && (
+            <button className="done-btn" onClick={() => setPhase("gameover")}>
+              Done
+            </button>
           )}
         </div>
       )}
@@ -242,39 +247,42 @@ const ColorGrid = ({
           <div className="phase-title">Time's up!</div>
 
           <div className="comparison-container">
-            {/* Original Grid */}
+            {/* Original Drawing */}
             <div className="comparison-section">
               <div className="comparison-label">Original</div>
-              <div className="color-grid" style={gridStyle}>
-                {Array.from({ length: userGrid.length }, (_, index) => {
-                  const expected = correctPattern[index.toString()];
-                  const hex = expected ? (COLOR_MAP[expected] || "#CCCCCC") : "#f5f5f5";
-                  return (
-                    <div key={index} className="final-cell" style={{ backgroundColor: hex }}></div>
-                  );
-                })}
-              </div>
+              <DrawingGrid
+                selectedColor={null}
+                correctPattern={correctPattern}
+                onFillsChange={() => {}}
+                isPaused={true}
+                gridSize={gridSize}
+                svgPath="/drawings/bear.svg"
+                showCorrectColors={true}
+              />
             </div>
 
-            {/* User's Grid */}
+            {/* User's Drawing */}
             <div className="comparison-section">
               <div className="comparison-label">Your Input</div>
-              <div className="color-grid" style={gridStyle}>
-                {userGrid.map((colorName, index) => (
-                  <div
-                    key={index}
-                    className="final-cell"
-                    style={{ backgroundColor: getColorHex(colorName) }}
-                  ></div>
-                ))}
-              </div>
+              <DrawingGrid
+                selectedColor={null}
+                correctPattern={correctPattern}
+                onFillsChange={() => {}}
+                isPaused={true}
+                gridSize={gridSize}
+                svgPath="/drawings/bear.svg"
+                showCorrectColors={false}
+                prefilledColors={fills}
+              />
             </div>
           </div>
 
           <div className="score-details">
             <div className="score-title">Your Score</div>
             <div className="score-percentage">{percentage}%</div>
-            <div className="score-matches">{correctMatches} out of {userGrid.length} correct</div>
+            <div className="score-matches">
+              {correctMatches} out of {svgRegionCount} correct
+            </div>
           </div>
 
           <div className="button-group">
@@ -282,12 +290,10 @@ const ColorGrid = ({
               Play Again
             </button>
 
-            {/* TODO: Add "onLeaderboard" function later */}
             <button className="result-button leaderboard-button">
-                Leaderboard
+              Leaderboard
             </button>
-        </div>
-
+          </div>
         </div>
       )}
     </div>

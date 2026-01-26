@@ -103,35 +103,104 @@
 
 /* Color Palette Styles */
 .color-palette {
+  position: relative;
+  width: 250px;
+  height: 175px;
+  background: #f7e7c1;
+  border-radius: 60% 70% 60% 70% / 70% 60% 70% 60%;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12), 0 1.5px 0 #e2c48d inset;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  width: 100%;
-  max-width: 500px;
+  justify-content: center;
+  margin: 0 auto 24px auto;
 }
+/*the "hole" in a palette*/
+/*.color-palette::before {
+  content: '';
+  position: absolute;
+  left: 28px;
+  top: 38px;
+  width: 32px;
+  height: 32px;
+  background: #fffbe7;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) inset;
+  border: 3px solid #e2c48d;
+  z-index: 2;
+}*/
 
 .palette-label {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 3;
   font-size: 18px;
   font-weight: bold;
   color: #333;
 }
 
 .palette-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  position: absolute;
   width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .palette-color {
-  aspect-ratio: 1;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  border-radius: 50%;
   border: 3px solid transparent;
-  min-width: 40px;
+  min-width: 34px;
+  min-height: 34px;
+  width: 34px;
+  height: 34px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 3;
+}
+
+.palette-color,
+.play-cell.clickable {
+  cursor: url('paintbrush.png') 8 28;
+}
+
+/* Arrange up to 6 colors in a palette arc. Adjust positions as needed. */
+/*red*/
+.palette-color:nth-child(1) {
+  left: 80px;
+  top: 20px;
+}
+.color-palette.difficulty-medium .palette-color:nth-child(1) {
+  left: 140px;
+}
+
+/*blue*/
+.palette-color:nth-child(2) {
+  left: 190px;
+  top: 58px;
+}
+/*green*/
+.palette-color:nth-child(3) {
+  left: 155px;
+  top: 115px;
+}
+/*yellow*/
+.palette-color:nth-child(4) {
+  left: 86px;
+  top: 115px;
+}
+/* purple*/
+.palette-color:nth-child(5) {
+  left: 30px;
+  top: 90px;
+}
+/*orange*/
+.palette-color:nth-child(6) {
+  left: 140px;
+  top: 20px;
 }
 
 .palette-color:hover {
@@ -164,6 +233,29 @@
 }
 
 .done-btn:active {
+  transform: scale(0.98);
+}
+
+/* Pause Button */
+.pause-btn {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 28px;
+  background-color: #f5a623;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 12px;
+  transition: all 0.3s ease;
+}
+
+.pause-btn:hover {
+  background-color: #d48806;
+  transform: scale(1.05);
+}
+
+.pause-btn:active {
   transform: scale(0.98);
 }
 
