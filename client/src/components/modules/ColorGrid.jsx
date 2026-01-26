@@ -171,6 +171,9 @@ const ColorGrid = ({
   const SVG_PATHS = [
     "/drawings/bear.svg",
     "/drawings/snake.svg",
+    "/drawings/apple.svg",
+    "/drawings/pug.svg",
+    "/drawings/bearshirt.svg",
     // add the paths once more photos come in
   ];
 
