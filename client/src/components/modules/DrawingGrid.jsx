@@ -239,15 +239,6 @@ export default function DrawingGrid({
       maxWidth: '420px',
       margin: '20px auto'
     }}>
-      <div style={{
-        marginBottom: '10px',
-        fontSize: '14px',
-        color: '#666',
-        textAlign: 'center'
-      }}>
-        {svgRegions.length} regions to color
-      </div>
-
       <svg
         viewBox={svgContent.viewBox}
         className="drawing-svg"
@@ -281,10 +272,9 @@ export default function DrawingGrid({
             dangerouslySetInnerHTML={{
               __html: region.element.replace(
                 /^<(\w+)/,
-                `<$1 fill="${
-                  showCorrectColors
-                    ? getColorHex(correctPattern[region.id])
-                    : (displayFills[region.id] ? getColorHex(displayFills[region.id]) : '#f5f5f5')
+                `<$1 fill="${showCorrectColors
+                  ? getColorHex(correctPattern[region.id])
+                  : (displayFills[region.id] ? getColorHex(displayFills[region.id]) : '#f5f5f5')
                 }"`
               )
             }}
