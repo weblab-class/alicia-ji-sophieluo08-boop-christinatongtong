@@ -163,9 +163,12 @@
   z-index: 3;
 }
 
-.palette-color,
+.palette-color {
+  cursor: pointer;
+}
+
 .play-cell.clickable {
-  cursor: url('paintbrush.png') 8 28;
+  cursor: url('/paint-brush.png') 8 24, pointer;
 }
 
 /* Arrange up to 6 colors in a palette arc. Adjust positions as needed. */

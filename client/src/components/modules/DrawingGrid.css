@@ -2,7 +2,8 @@
   width: 100%;
   max-width: 420px;
   margin: 20px auto;
-  border: 2px solid #ccc; /* debug: see container */
+  border: 2px solid #ccc;
+  /* debug: see container */
 }
 
 .drawing-svg {
@@ -14,8 +15,16 @@
 }
 
 .drawing-region {
-  cursor: url('/cursors/paintbrush.png') 8 24, pointer;
+  cursor: url('/paint-brush.png') 8 24, pointer;
   transition: opacity 0.15s ease, stroke 0.15s ease;
+}
+
+.drawing-svg.paintbrush-cursor {
+  cursor: url('/paint-brush.png') 8 24, pointer !important;
+}
+
+.drawing-svg.paintbrush-cursor * {
+  cursor: url('/paint-brush.png') 8 24, pointer !important;
 }
 
 .drawing-region:hover path {

@@ -222,7 +222,11 @@ export default function DrawingGrid({
                 strokeWidth="2"
                 onClick={() => handleRegionClick(id)}
                 style={{
-                  cursor: isPaused ? 'not-allowed' : 'pointer'
+                  cursor: isPaused
+                    ? 'not-allowed'
+                    : (selectedColor
+                      ? `url('/paint-brush.png') 8 24, pointer`
+                      : 'pointer')
                 }}
               />
             );
@@ -241,7 +245,7 @@ export default function DrawingGrid({
     }}>
       <svg
         viewBox={svgContent.viewBox}
-        className="drawing-svg"
+        className={`drawing-svg ${!isPaused && selectedColor ? 'paintbrush-cursor' : ''}`}
         role="img"
         aria-label="Coloring drawing"
         style={{
@@ -250,7 +254,12 @@ export default function DrawingGrid({
           display: 'block',
           background: '#fafafa',
           border: '2px solid #ddd',
-          borderRadius: '8px'
+          borderRadius: '8px',
+          cursor: isPaused
+            ? 'not-allowed'
+            : (selectedColor
+              ? `url('/paint-brush.png') 8 24, pointer`
+              : 'pointer')
         }}
       >
         {svgRegions.map((region) => (
@@ -258,7 +267,7 @@ export default function DrawingGrid({
             key={region.id}
             onClick={() => handleRegionClick(region.id)}
             style={{
-              cursor: isPaused ? 'not-allowed' : 'pointer',
+              pointerEvents: 'all',
               transition: 'opacity 0.2s ease'
             }}
             onMouseEnter={(e) => {
@@ -275,7 +284,11 @@ export default function DrawingGrid({
                 `<$1 fill="${showCorrectColors
                   ? getColorHex(correctPattern[region.id])
                   : (displayFills[region.id] ? getColorHex(displayFills[region.id]) : '#f5f5f5')
-                }"`
+                }" style="cursor: ${isPaused
+                  ? 'not-allowed'
+                  : (selectedColor
+                    ? `url('/paint-brush.png') 8 24, pointer`
+                    : 'pointer')};"`
               )
             }}
           />
