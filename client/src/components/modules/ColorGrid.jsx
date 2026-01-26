@@ -166,6 +166,19 @@ const ColorGrid = ({
     gap: "8px",
   };
 
+
+  // select a random drawing from our drawings folder
+  const SVG_PATHS = [
+    "/drawings/bear.svg",
+    "/drawings/snake.svg",
+    // add the paths once more photos come in
+  ];
+
+  const [svgPath] = useState(() => {
+    return SVG_PATHS[Math.floor(Math.random() * SVG_PATHS.length)];
+  });
+
+
   return (
     <div className="color-grid-wrapper">
       <div className="timer-display">
@@ -182,7 +195,7 @@ const ColorGrid = ({
             onFillsChange={() => { }} // No interaction during memorization
             isPaused={true}
             gridSize={gridSize}
-            svgPath="/drawings/bear.svg"
+            svgPath={svgPath}
             showCorrectColors={true} // Show the correct colors during memorization
           />
           <button className="ready-btn" onClick={handleReady}>
@@ -204,7 +217,7 @@ const ColorGrid = ({
               onFillsChange={handleFillsChange}
               isPaused={isPaused}
               gridSize={gridSize}
-              svgPath="/drawings/bear.svg"
+              svgPath={svgPath}
               showCorrectColors={false}
             />
           </div>
@@ -249,7 +262,7 @@ const ColorGrid = ({
                 onFillsChange={() => { }}
                 isPaused={true}
                 gridSize={gridSize}
-                svgPath="/drawings/bear.svg"
+                svgPath={svgPath}
                 showCorrectColors={true}
               />
             </div>
@@ -263,7 +276,7 @@ const ColorGrid = ({
                 onFillsChange={() => { }}
                 isPaused={true}
                 gridSize={gridSize}
-                svgPath="/drawings/bear.svg"
+                svgPath={svgPath}
                 showCorrectColors={false}
                 prefilledColors={fills}
               />
