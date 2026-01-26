@@ -170,16 +170,6 @@ const ColorGrid = ({
     <div className="color-grid-wrapper">
       <div className="timer-display">
         {phase === "memorize" ? timer : playTimer}s
-        {phase === "play" && !isPaused && (
-          <button className="pause-btn" onClick={handlePause}>
-            Pause
-          </button>
-        )}
-        {phase === "play" && isPaused && (
-          <button className="pause-btn" onClick={handleRestart}>
-            Resume
-          </button>
-        )}
       </div>
 
       {/* Memorize Phase - Show colored drawing */}
@@ -204,14 +194,7 @@ const ColorGrid = ({
       {/* Play Phase - Grid and palette */}
       {phase === "play" && (
         <div className="play-phase-container">
-          {isPaused && (
-            <div className="phase-title" style={{ color: "#888", marginBottom: "10px" }}>
-              Paused - click Resume to continue
-            </div>
-          )}
-          {!isPaused && (
-            <div className="phase-title">Fill the grid!</div>
-          )}
+          <div className="phase-title">Fill the grid!</div>
 
           {/* DrawingGrid component */}
           <div className="color-grid-container">
