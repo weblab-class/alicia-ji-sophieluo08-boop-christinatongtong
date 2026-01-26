@@ -90,8 +90,6 @@ const Game = () => {
     );
   }
 
-  console.log("Game data:", gameData);
-
   // Generate hardcoded pattern if not provided by API (for testing)
   const generateHardcodedPattern = (gridSize, colorBank) => {
     const pattern = {};

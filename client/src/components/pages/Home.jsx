@@ -10,11 +10,6 @@ const Home = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
 
-  useEffect(() => {
-    console.log("Home component - userId changed:", userId);
-    console.log("Home component - will show:", userId ? "game content" : "login");
-  }, [userId]);
-
   const handleDifficultySelect = (difficultyData) => {
     setSelectedDifficulty(difficultyData);
   };
@@ -41,13 +36,6 @@ const Home = () => {
     <div className="home-container">
       <div className="home-content">
         <h1 className="app-title">FILL</h1>
-
-        {/* Debug info - remove in production */}
-        {process.env.NODE_ENV === "development" && (
-          <div style={{ color: "white", fontSize: "12px", marginBottom: "10px" }}>
-            Debug: userId = {userId ? userId : "null"}
-          </div>
-        )}
 
         {!userId ? (
           <div className="login-section">
