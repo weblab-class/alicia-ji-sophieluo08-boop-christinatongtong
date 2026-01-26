@@ -74,6 +74,28 @@ export default function DrawingGrid({
         // Extract viewBox
         const viewBox = svgElement.getAttribute("viewBox") || "0 0 500 500";
 
+        // Extract CSS styles from <style> tags to check for white (#ffffff)
+        const styleSheets = svgDoc.querySelectorAll("style");
+        const specialColorClasses = new Set();
+        styleSheets.forEach((styleTag) => {
+          const styleText = styleTag.textContent || styleTag.innerHTML;
+          // Check if any CSS rule contains white (#ffffff, #fff, white)
+          if (styleText.includes("#ffffff") || styleText.includes("#fff") ||
+            styleText.includes("white") || styleText.includes("rgb(255,255,255)") ||
+            styleText.includes("rgb(255, 255, 255)")) {
+            // Extract class names from CSS rules that define white fill
+            const classMatches = styleText.match(/\.([a-zA-Z0-9_-]+)\s*\{[^}]*fill[^}]*(?:#ffffff|#fff|white|rgb\(255[,\s]*255[,\s]*255\))[^}]*\}/gi);
+            if (classMatches) {
+              classMatches.forEach(match => {
+                const classNameMatch = match.match(/\.([a-zA-Z0-9_-]+)/);
+                if (classNameMatch) {
+                  specialColorClasses.add(classNameMatch[1]);
+                }
+              });
+            }
+          }
+        });
+
         // Find all fillable elements
         const fillableElements = svgDoc.querySelectorAll(
           "path, circle, rect, polygon, ellipse"
@@ -83,9 +105,27 @@ export default function DrawingGrid({
         fillableElements.forEach((element, index) => {
           const clonedElement = element.cloneNode(true);
 
-          // Store original attributes but remove fill
-          const originalFill = element.getAttribute("fill");
+          // Check fill from multiple sources:
+          // 1. Direct fill attribute
+          // 2. CSS class (check if element has a class that defines white)
+          const directFill = element.getAttribute("fill");
+          const elementClass = element.getAttribute("class");
+          const hasSpecialClass = elementClass && specialColorClasses.has(elementClass);
+
+          // Check if fill is white (#ffffff, #fff, white, or rgb(255,255,255))
+          const normalizedFill = directFill ? directFill.toLowerCase().trim() : "";
+          const isSpecialColor = hasSpecialClass ||
+            normalizedFill === "#ffffff" ||
+            normalizedFill === "#fff" ||
+            normalizedFill === "white" ||
+            normalizedFill === "rgb(255,255,255)" ||
+            normalizedFill === "rgb(255, 255, 255)";
+
           clonedElement.removeAttribute("fill");
+          // Remove class attribute to prevent CSS from applying
+          if (hasSpecialClass) {
+            clonedElement.removeAttribute("class");
+          }
 
           // Keep stroke if it exists
           const stroke = element.getAttribute("stroke");
@@ -97,7 +137,8 @@ export default function DrawingGrid({
           regions.push({
             id: index.toString(),
             element: clonedElement.outerHTML,
-            originalFill: originalFill
+            originalFill: directFill,
+            isSpecialColor: isSpecialColor // Mark this color as non-fillable
           });
         });
 
@@ -108,10 +149,12 @@ export default function DrawingGrid({
         setSvgContent({ viewBox, regions });
         setSvgRegions(regions);
 
-        // Initialize fills for all regions
+        // Initialize fills for all regions (skip special color regions)
         const newFills = {};
         regions.forEach((region) => {
-          newFills[region.id] = null;
+          if (!region.isSpecialColor) {
+            newFills[region.id] = null;
+          }
         });
         setFills(newFills);
 
@@ -140,6 +183,9 @@ export default function DrawingGrid({
 
   const handleRegionClick = (id) => {
     if (!selectedColor || isPaused) return;
+    // Don't allow filling special color regions (#aa008f)
+    const region = svgRegions.find(r => r.id === id);
+    if (region && region.isSpecialColor) return;
     setFills((prev) => ({ ...prev, [id]: selectedColor }));
   };
 
@@ -262,37 +308,49 @@ export default function DrawingGrid({
               : 'pointer')
         }}
       >
-        {svgRegions.map((region) => (
-          <g
-            key={region.id}
-            onClick={() => handleRegionClick(region.id)}
-            style={{
-              pointerEvents: 'all',
-              transition: 'opacity 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (!isPaused) {
-                e.currentTarget.style.opacity = '0.85';
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = '1';
-            }}
-            dangerouslySetInnerHTML={{
-              __html: region.element.replace(
-                /^<(\w+)/,
-                `<$1 fill="${showCorrectColors
-                  ? getColorHex(correctPattern[region.id])
-                  : (displayFills[region.id] ? getColorHex(displayFills[region.id]) : '#f5f5f5')
-                }" style="cursor: ${isPaused
-                  ? 'not-allowed'
-                  : (selectedColor
-                    ? `url('/paint-brush.png') 8 24, pointer`
-                    : 'pointer')};"`
-              )
-            }}
-          />
-        ))}
+        {svgRegions.map((region) => {
+          const isSpecialColor = region.isSpecialColor;
+          // Always show black for special color regions (#aa008f), ignore correctPattern and user fills
+          let fillColor = '#f5f5f5';
+          if (isSpecialColor) {
+            fillColor = '#000000'; // Always black for special color regions in all stages
+          } else if (showCorrectColors) {
+            fillColor = correctPattern[region.id] ? getColorHex(correctPattern[region.id]) : '#f5f5f5';
+          } else if (displayFills[region.id]) {
+            fillColor = getColorHex(displayFills[region.id]);
+          }
+
+          return (
+            <g
+              key={region.id}
+              onClick={isSpecialColor ? undefined : () => handleRegionClick(region.id)}
+              style={{
+                pointerEvents: isSpecialColor ? 'none' : 'all',
+                transition: 'opacity 0.2s ease'
+              }}
+              onMouseEnter={isSpecialColor ? undefined : (e) => {
+                if (!isPaused) {
+                  e.currentTarget.style.opacity = '0.85';
+                }
+              }}
+              onMouseLeave={isSpecialColor ? undefined : (e) => {
+                e.currentTarget.style.opacity = '1';
+              }}
+              dangerouslySetInnerHTML={{
+                __html: region.element.replace(
+                  /^<(\w+)/,
+                  `<$1 fill="${fillColor}" style="cursor: ${isSpecialColor
+                    ? 'default'
+                    : (isPaused
+                      ? 'not-allowed'
+                      : (selectedColor
+                        ? `url('/paint-brush.png') 8 24, pointer`
+                        : 'pointer'))};"`
+                )
+              }}
+            />
+          );
+        })}
       </svg>
     </div>
   );
