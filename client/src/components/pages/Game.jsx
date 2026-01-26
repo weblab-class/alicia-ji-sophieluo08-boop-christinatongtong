@@ -114,6 +114,7 @@ const Game = () => {
         colorBank={gameData.colorBank}
         correctPattern={correctPattern}
         difficulty={gameData.difficulty}
+        mode={difficultyData.mode}
       />
     </div>
   );

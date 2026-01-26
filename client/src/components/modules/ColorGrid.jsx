@@ -27,13 +27,27 @@ const getColorHex = (color) => {
   return colorMap[color] || color;
 };
 
+// Helper to map hex to color names
+const getColorName = (hex) => {
+  const reverseColorMap = {
+    "#FF6B6B": "red",
+    "#4ECDC4": "blue",
+    "#FFE66D": "yellow",
+    "#73A580": "green",
+    "#B4A7D6": "purple",
+    "#FFA07A": "orange",
+  };
+  return reverseColorMap[hex] || hex;
+};
+
 const ColorGrid = ({
   gameId,
   gridSize,
   timeLimit,
   colorBank,
   correctPattern,
-  difficulty
+  difficulty,
+  mode
 }) => {
   const navigate = useNavigate();
 
@@ -178,7 +192,10 @@ const ColorGrid = ({
   ];
 
   const [svgPath] = useState(() => {
-    return SVG_PATHS[Math.floor(Math.random() * SVG_PATHS.length)];
+    if (mode === "drawing") {
+      return SVG_PATHS[Math.floor(Math.random() * SVG_PATHS.length)];
+    }
+    return null; // Use regular grid for grid mode
   });
 
 
@@ -192,15 +209,27 @@ const ColorGrid = ({
       {phase === "memorize" && showColorGrid && (
         <div className="color-grid-container">
           <div className="phase-title">Memorize the colors!</div>
-          <DrawingGrid
-            selectedColor={null}
-            correctPattern={correctPattern}
-            onFillsChange={() => { }} // No interaction during memorization
-            isPaused={true}
-            gridSize={gridSize}
-            svgPath={svgPath}
-            showCorrectColors={true} // Show the correct colors during memorization
-          />
+          {mode === "grid" ? (
+            <div className="grid-container" style={gridStyle}>
+              {Array.from({ length: gridSize * gridSize }, (_, index) => (
+                <div
+                  key={index}
+                  className="grid-square hoverable"
+                  style={{ backgroundColor: getColorHex(correctPattern[index.toString()]) }}
+                />
+              ))}
+            </div>
+          ) : (
+            <DrawingGrid
+              selectedColor={null}
+              correctPattern={correctPattern}
+              onFillsChange={() => { }} // No interaction during memorization
+              isPaused={true}
+              gridSize={gridSize}
+              svgPath={svgPath}
+              showCorrectColors={true} // Show the correct colors during memorization
+            />
+          )}
           <button className="ready-btn" onClick={handleReady}>
             Ready
           </button>
@@ -215,15 +244,36 @@ const ColorGrid = ({
           <div className="play-content-wrapper">
             {/* DrawingGrid component */}
             <div className="color-grid-container">
-              <DrawingGrid
-                selectedColor={selectedColor}
-                correctPattern={correctPattern}
-                onFillsChange={handleFillsChange}
-                isPaused={isPaused}
-                gridSize={gridSize}
-                svgPath={svgPath}
-                showCorrectColors={false}
-              />
+              {mode === "grid" ? (
+                <div className="grid-container" style={gridStyle}>
+                  {Array.from({ length: gridSize * gridSize }, (_, index) => {
+                    const id = index.toString();
+                    return (
+                      <div
+                        key={index}
+                        className="grid-square clickable"
+                        style={{ backgroundColor: fills[id] ? getColorHex(fills[id]) : "#f5f5f5" }}
+                        onClick={() => {
+                          if (!isPaused && selectedColor) {
+                            const colorName = getColorName(selectedColor);
+                            setFills(prev => ({ ...prev, [id]: colorName }));
+                          }
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <DrawingGrid
+                  selectedColor={selectedColor}
+                  correctPattern={correctPattern}
+                  onFillsChange={handleFillsChange}
+                  isPaused={isPaused}
+                  gridSize={gridSize}
+                  svgPath={svgPath}
+                  showCorrectColors={false}
+                />
+              )}
             </div>
 
             {/* Color palette */}
@@ -261,30 +311,57 @@ const ColorGrid = ({
             {/* Original Drawing */}
             <div className="comparison-section">
               <div className="comparison-label">Original</div>
-              <DrawingGrid
-                selectedColor={null}
-                correctPattern={correctPattern}
-                onFillsChange={() => { }}
-                isPaused={true}
-                gridSize={gridSize}
-                svgPath={svgPath}
-                showCorrectColors={true}
-              />
+              {mode === "grid" ? (
+                <div className="grid-container" style={gridStyle}>
+                  {Array.from({ length: gridSize * gridSize }, (_, index) => (
+                    <div
+                      key={index}
+                      className="grid-square"
+                      style={{ backgroundColor: getColorHex(correctPattern[index.toString()]) }}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <DrawingGrid
+                  selectedColor={null}
+                  correctPattern={correctPattern}
+                  onFillsChange={() => { }}
+                  isPaused={true}
+                  gridSize={gridSize}
+                  svgPath={svgPath}
+                  showCorrectColors={true}
+                />
+              )}
             </div>
 
             {/* User's Drawing */}
             <div className="comparison-section">
               <div className="comparison-label">Your Input</div>
-              <DrawingGrid
-                selectedColor={null}
-                correctPattern={correctPattern}
-                onFillsChange={() => { }}
-                isPaused={true}
-                gridSize={gridSize}
-                svgPath={svgPath}
-                showCorrectColors={false}
-                prefilledColors={fills}
-              />
+              {mode === "grid" ? (
+                <div className="grid-container" style={gridStyle}>
+                  {Array.from({ length: gridSize * gridSize }, (_, index) => {
+                    const id = index.toString();
+                    return (
+                      <div
+                        key={index}
+                        className="grid-square"
+                        style={{ backgroundColor: fills[id] ? getColorHex(fills[id]) : "#f5f5f5" }}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <DrawingGrid
+                  selectedColor={null}
+                  correctPattern={correctPattern}
+                  onFillsChange={() => { }}
+                  isPaused={true}
+                  gridSize={gridSize}
+                  svgPath={svgPath}
+                  showCorrectColors={false}
+                  prefilledColors={fills}
+                />
+              )}
             </div>
           </div>
 
