@@ -105,13 +105,15 @@ const Game = () => {
   // Use correctPattern from API, or generate hardcoded one for testing
   const correctPattern = gameData.correctPattern || generateHardcodedPattern(gameData.gridSize, gameData.colorBank);
 
+  const playTimeLimit = difficultyData.mode === "drawing" ? 30 : gameData.playTimeLimit;
+
   return (
     <div className="game-container">
       <ColorGrid
         gameId={gameData.gameId}
         gridSize={gameData.gridSize}
         timeLimit={gameData.timeLimit}
-        playTimeLimit={gameData.playTimeLimit}
+        playTimeLimit={playTimeLimit}
         colorBank={gameData.colorBank}
         correctPattern={correctPattern}
         difficulty={gameData.difficulty}
