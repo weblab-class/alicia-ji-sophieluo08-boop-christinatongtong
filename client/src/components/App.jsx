@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 import { Outlet } from "react-router-dom";
+import HamburgerMenu from "./modules/HamburgerMenu";
 
 import jwt_decode from "jwt-decode";
 
@@ -58,6 +59,7 @@ const App = () => {
 
   return (
     <UserContext.Provider value={authContextValue}>
+      <HamburgerMenu />
       <Outlet />
     </UserContext.Provider>
   );

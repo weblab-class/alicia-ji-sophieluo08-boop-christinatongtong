@@ -1,6 +1,7 @@
 import DrawingGrid from "./DrawingGrid";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { post } from "../../utilities"; // adjust path if needed
 import "./ColorGrid.css";
 
 // Color name to hex mapping for comparison phase
@@ -199,6 +200,36 @@ const ColorGrid = ({
   });
 
 
+
+  // submit scores to backend
+  const submittedRef = useRef(false);
+
+  useEffect(() => {
+    if (phase !== "gameover") return;
+    if (submittedRef.current) return;
+    submittedRef.current = true;
+
+    // time taken in seconds
+    const totalPlay = playTimeLimit || 15;
+    const timeTaken = totalPlay - playTimer;
+
+    // IMPORTANT: gameId must be real (created from backend)
+    if (!gameId) {
+      console.warn("No gameId, cannot submit game.");
+      return;
+    }
+
+    post("/api/game/submit", {
+      gameId,
+      userPattern: fills,   // object mapping regionId -> color
+      timeTaken,
+    }).catch((err) => {
+      console.error("Failed to submit game:", err);
+    });
+  }, [phase, gameId, fills, playTimer, playTimeLimit]);
+
+
+
   return (
     <div className="color-grid-wrapper">
       <div className="timer-display">
@@ -378,7 +409,7 @@ const ColorGrid = ({
               Play Again
             </button>
 
-            <button className="result-button leaderboard-button">
+            <button className="result-button leaderboard-button" onClick={() => navigate("/leaderboard")}>
               Leaderboard
             </button>
           </div>
