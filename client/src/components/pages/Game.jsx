@@ -111,6 +111,7 @@ const Game = () => {
         gameId={gameData.gameId}
         gridSize={gameData.gridSize}
         timeLimit={gameData.timeLimit}
+        playTimeLimit={gameData.playTimeLimit}
         colorBank={gameData.colorBank}
         correctPattern={correctPattern}
         difficulty={gameData.difficulty}

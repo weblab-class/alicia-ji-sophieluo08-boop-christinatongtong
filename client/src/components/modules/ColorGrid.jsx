@@ -44,6 +44,7 @@ const ColorGrid = ({
   gameId,
   gridSize,
   timeLimit,
+  playTimeLimit,
   colorBank,
   correctPattern,
   difficulty,
@@ -73,7 +74,7 @@ const ColorGrid = ({
 
   const [phase, setPhase] = useState("memorize"); // memorize, play, gameover
   const [timer, setTimer] = useState(timeLimit || 10);
-  const [playTimer, setPlayTimer] = useState(15);
+  const [playTimer, setPlayTimer] = useState(playTimeLimit || 15);
   const [fills, setFills] = useState({}); // Changed from userGrid to fills
   const [selectedColor, setSelectedColor] = useState(null);
   const [showColorGrid, setShowColorGrid] = useState(true);
@@ -92,9 +93,9 @@ const ColorGrid = ({
     } else if (phase === "memorize" && timer === 0) {
       setShowColorGrid(false);
       setPhase("play");
-      setPlayTimer(15);
+      setPlayTimer(playTimeLimit || 15);
     }
-  }, [phase, timer]);
+  }, [phase, timer, playTimeLimit]);
 
   // Play phase timer with pause logic
   useEffect(() => {
@@ -140,7 +141,7 @@ const ColorGrid = ({
     // skip remaining memorization time and move to play phase
     setShowColorGrid(false);
     setPhase("play");
-    setPlayTimer(15);
+    setPlayTimer(playTimeLimit || 15);
   };
 
   const formatTime = (seconds) => {

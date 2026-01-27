@@ -45,13 +45,23 @@ router.post("/initsocket", (req, res) => {
 // |------------------------------|
 
 // get color bank based on difficulty
+// Randomly selects colors from the available color pool
 function getColorBank(difficulty) {
-  const colorBanks = {
-    easy: ["red", "blue"], // 2 colors
-    medium: ["red", "blue", "green", "yellow"], // 4 colors
-    hard: ["red", "blue", "green", "yellow", "purple", "orange"], // 6 colors
+  // All available colors from COLOR_MAP
+  const allColors = ["red", "blue", "yellow", "green", "purple", "orange"];
+
+  // Number of colors to select based on difficulty
+  const colorCounts = {
+    easy: 2,
+    medium: 3,
+    hard: 4,
   };
-  return colorBanks[difficulty] || colorBanks.medium;
+
+  const count = colorCounts[difficulty] || 3;
+
+  // Randomly shuffle and select the required number of colors
+  const shuffled = [...allColors].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
 }
 
 // generate random pattern of colored squares
@@ -77,6 +87,16 @@ function getTimeLimit(difficulty) {
     easy: 20,
     medium: 20,
     hard: 20,
+  };
+  return limits[difficulty] || 15;
+}
+
+// get play/fill time limit based on difficulty
+function getPlayTimeLimit(difficulty) {
+  const limits = {
+    easy: 15,
+    medium: 30,
+    hard: 40,
   };
   return limits[difficulty] || 15;
 }
@@ -150,6 +170,7 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
   const correctPattern = generatePattern(gridSize, difficulty);
   const colorBank = getColorBank(difficulty);
   const timeLimit = getTimeLimit(difficulty);
+  const playTimeLimit = getPlayTimeLimit(difficulty);
 
   // create game in database
   const game = new Game({
@@ -159,6 +180,7 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
     correctPattern,
     colorBank,
     timeLimit,
+    playTimeLimit,
     status: "active",
   });
 
@@ -171,6 +193,7 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
         gridSize: savedGame.gridSize,
         difficulty: savedGame.difficulty,
         timeLimit: savedGame.timeLimit,
+        playTimeLimit: savedGame.playTimeLimit || getPlayTimeLimit(difficulty),
         colorBank: savedGame.colorBank,
         correctPattern: savedGame.correctPattern, // Users need this to memorize
       });

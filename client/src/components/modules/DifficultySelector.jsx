@@ -16,18 +16,18 @@ const DifficultySelector = ({ onDifficultySelect }) => {
     {
       id: "medium",
       name: "Medium",
-      gridSize: 4,
+      gridSize: 3,
       timeLimit: 20,
-      description: "4×4 grid, 20 seconds to memorize",
-      colorBank: 4,
+      description: "3×3 grid, 20 seconds to memorize",
+      colorBank: 3,
     },
     {
       id: "hard",
       name: "Hard",
-      gridSize: 5,
+      gridSize: 4,
       timeLimit: 20,
-      description: "5×5 grid, 20 seconds to memorize",
-      colorBank: 6,
+      description: "4×4 grid, 20 seconds to memorize",
+      colorBank: 4,
     },
   ];
 
@@ -49,9 +49,8 @@ const DifficultySelector = ({ onDifficultySelect }) => {
         {difficulties.map((difficulty) => (
           <div
             key={difficulty.id}
-            className={`difficulty-card ${
-              selectedDifficulty === difficulty.id ? "selected" : ""
-            }`}
+            className={`difficulty-card ${selectedDifficulty === difficulty.id ? "selected" : ""
+              }`}
             onClick={() => handleSelect(difficulty)}
           >
             <div className="difficulty-name">{difficulty.name}</div>

@@ -32,10 +32,15 @@ const GameSchema = new mongoose.Schema({
         type: [String],
         required: true,
     },
-    // time limit in sec
+    // time limit in sec (memorization time)
     timeLimit: {
         type: Number,
         required: true,
+    },
+    // play/fill time limit in sec
+    playTimeLimit: {
+        type: Number,
+        default: 15,
     },
     // time taken by user to complete recoloring
     timeTaken: {
