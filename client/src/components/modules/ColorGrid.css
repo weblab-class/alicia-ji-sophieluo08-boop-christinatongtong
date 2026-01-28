@@ -6,6 +6,57 @@
   gap: 30px;
   width: 100%;
   padding: 20px;
+  position: relative;
+  background-color: white;
+  min-height: 100vh;
+}
+
+.game-logo-button {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: transparent !important;
+  border: none !important;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0;
+  z-index: 9999;
+  transition: transform 0.2s ease;
+}
+
+.game-logo-button:hover {
+  transform: scale(1.1);
+  background: transparent !important;
+}
+
+.game-logo-button:active {
+  transform: scale(0.95);
+  background: transparent !important;
+}
+
+.game-logo-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.game-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  background: transparent;
+  display: block;
+  /* Image is already transparent, no filters needed */
+}
+
+.timer-score-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .timer-display {
@@ -36,6 +87,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  padding: 0 50px;
+  box-sizing: border-box;
 }
 
 .grid-container {
@@ -44,6 +97,9 @@
   width: 100%;
   max-width: 450px;
   min-width: 300px;
+  margin: 0 auto;
+  padding: 0 50px;
+  box-sizing: border-box;
 }
 
 .grid-square {
@@ -369,10 +425,12 @@
 
 .comparison-container {
   display: flex;
-  gap: 40px;
+  gap: 50px;
   align-items: flex-start;
   justify-content: center;
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   flex-wrap: wrap;
 }
 
@@ -381,12 +439,53 @@
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  flex: 1 1 400px;
+  min-width: 350px;
+  max-width: 500px;
 }
 
 .comparison-label {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   color: #333;
+}
+
+/* Larger screens - make comparison sections bigger */
+@media (min-width: 1024px) {
+
+  .button-group {
+    margin-top: 40px; /* more space from the comparison grids */
+    gap: 400px;        /* more space between the two buttons */
+  }
+
+  .play-again-btn,
+  .leaderboard-button {
+    padding: 14px 36px;
+    font-size: 19px;
+    border-radius: 10px;
+    min-width: 170px;
+  }
+
+  .comparison-container {
+    gap: 60px;
+    max-width: 1400px;
+  }
+
+  .comparison-section {
+    flex: 1 1 450px;
+    min-width: 400px;
+    max-width: 550px;
+  }
+
+  .comparison-section .grid-container {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .comparison-section .drawing-svg {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
 }
 
 .final-grid {
@@ -418,10 +517,11 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: 25px;
+  padding: 20px 25px;
   background-color: #f5f5f5;
   border-radius: 12px;
   color: #333;
+  min-width: 200px;
 }
 
 .score-title {
@@ -447,7 +547,8 @@
 }
 
 .play-again-btn,
-.home-btn {
+.home-btn,
+.leaderboard-button {
   font-size: 18px;
   font-weight: bold;
   padding: 12px 30px;
@@ -457,17 +558,20 @@
   transition: all 0.3s ease;
 }
 
-.play-again-btn {
+.play-again-btn,
+.leaderboard-button {
   background-color: #667eea;
   color: white;
 }
 
-.play-again-btn:hover {
+.play-again-btn:hover,
+.leaderboard-button:hover {
   background-color: #5568d3;
   transform: scale(1.05);
 }
 
-.play-again-btn:active {
+.play-again-btn:active,
+.leaderboard-button:active {
   transform: scale(0.98);
 }
 
@@ -539,4 +643,375 @@
   border: 1px solid rgba(0,0,0,0.12);
   background: white;
   cursor: pointer;
+}
+
+
+.leaderboard-button {
+  background-color: white;
+  color: #333;
+  border: 2px solid #667eea;
+  font-weight: bold;
+}
+
+.leaderboard-button:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.leaderboard-button:active {
+  transform: scale(0.98);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+
+  .game-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .game-logo-button {
+    top: 12px;
+    left: 12px;
+  }
+
+  .color-grid-wrapper {
+    padding: 15px 10px;
+    gap: 20px;
+  }
+
+  .timer-score-wrapper {
+    gap: 20px;
+  }
+
+  .timer-display {
+    font-size: 36px;
+    min-width: 120px;
+  }
+
+  .score-details {
+    padding: 15px 20px;
+    min-width: 160px;
+  }
+
+  .play-content-wrapper {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .play-content-wrapper .color-grid-container>div {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .play-content-wrapper .color-grid-container .drawing-svg {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-width: min(90vw, 400px) !important;
+  }
+
+  .palette-wrapper {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .color-palette {
+    width: 200px;
+    height: 140px;
+  }
+
+  .palette-color {
+    min-width: 32px;
+    min-height: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Scale down palette color positions for smaller palette (maintaining oval arc with proper spacing) */
+  .palette-color:nth-child(1) {
+    left: 66px;
+    top: 12px;
+  }
+
+  .color-palette.difficulty-medium .palette-color:nth-child(1) {
+    left: 114px;
+  }
+
+  .palette-color:nth-child(2) {
+    left: 154px;
+    top: 40px;
+  }
+
+  .palette-color:nth-child(3) {
+    left: 126px;
+    top: 80px;
+  }
+
+  .palette-color:nth-child(4) {
+    left: 66px;
+    top: 80px;
+  }
+
+  .palette-color:nth-child(5) {
+    left: 22px;
+    top: 40px;
+  }
+
+  .palette-color:nth-child(6) {
+    left: 66px;
+    top: 12px;
+  }
+
+  .color-grid-container {
+    width: 100%;
+    padding: 0 30px;
+    box-sizing: border-box;
+  }
+
+  .grid-container {
+    max-width: 100%;
+    min-width: auto;
+    gap: 10px;
+    margin: 0 auto;
+  }
+
+  .memorize-cell,
+  .play-cell {
+    min-height: 50px;
+  }
+
+  .ready-btn,
+  .done-btn {
+    padding: 16px 32px;
+    font-size: 18px;
+    min-height: 48px;
+  }
+
+  .phase-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .gameover-container {
+    padding: 20px 15px;
+  }
+
+  .comparison-container {
+    flex-direction: row;
+    gap: 12px;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .comparison-section {
+    width: 47%;
+    flex: 0 0 47%;
+    min-width: 0;
+  }
+
+  .comparison-section .grid-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 5px;
+  }
+
+  .comparison-section .color-grid-container {
+    max-width: 100%;
+    width: 100%;
+    padding: 0 5px;
+  }
+
+  .comparison-section .drawing-svg {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .comparison-label {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .score-details {
+    padding: 18px 15px;
+    max-width: 90%;
+  }
+
+  .score-title {
+    font-size: 18px;
+  }
+
+  .score-percentage {
+    font-size: 36px;
+  }
+
+  .score-matches {
+    font-size: 14px;
+  }
+
+  .button-group {
+    flex-direction: row;
+    gap: 12px;
+    width: auto;
+    max-width: 90%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .play-again-btn,
+  .leaderboard-button {
+    width: auto;
+    min-width: 140px;
+    padding: 14px 24px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .timer-score-wrapper {
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .timer-display {
+    font-size: 32px;
+  }
+
+  .score-details {
+    padding: 12px 18px;
+    min-width: 140px;
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .phase-title {
+    font-size: 18px;
+  }
+
+  .color-grid-wrapper {
+    padding: 10px 5px;
+    gap: 15px;
+  }
+
+  .play-content-wrapper .color-grid-container .drawing-svg {
+    max-width: min(95vw, 350px) !important;
+  }
+
+  .color-grid-container {
+    padding: 0 25px;
+  }
+
+  .grid-container {
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .ready-btn,
+  .done-btn {
+    padding: 14px 28px;
+    font-size: 16px;
+  }
+
+  .color-palette {
+    width: 180px;
+    height: 126px;
+  }
+
+  .palette-color {
+    min-width: 30px;
+    min-height: 30px;
+    width: 30px;
+    height: 30px;
+  }
+
+  /* Scale down palette color positions for even smaller screens (maintaining oval arc with proper spacing) */
+  .palette-color:nth-child(1) {
+    left: 60px;
+    top: 11px;
+  }
+
+  .color-palette.difficulty-medium .palette-color:nth-child(1) {
+    left: 103px;
+  }
+
+  .palette-color:nth-child(2) {
+    left: 139px;
+    top: 36px;
+  }
+
+  .palette-color:nth-child(3) {
+    left: 114px;
+    top: 72px;
+  }
+
+  .palette-color:nth-child(4) {
+    left: 60px;
+    top: 72px;
+  }
+
+  .palette-color:nth-child(5) {
+    left: 20px;
+    top: 36px;
+  }
+
+  .palette-color:nth-child(6) {
+    left: 60px;
+    top: 11px;
+  }
+
+  .comparison-container {
+    gap: 8px;
+    width: 100%;
+    padding: 0 5px;
+  }
+
+  .comparison-section {
+    width: 47%;
+    flex: 0 0 47%;
+    min-width: 0;
+  }
+
+  .comparison-section .grid-container {
+    padding: 0 3px;
+  }
+
+  .comparison-section .color-grid-container {
+    padding: 0 3px;
+  }
+
+  .comparison-label {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .score-title {
+    font-size: 16px;
+  }
+
+  .score-percentage {
+    font-size: 28px;
+  }
+
+  .score-matches {
+    font-size: 13px;
+  }
+
+  .button-group {
+    max-width: 95%;
+  }
+
+  .play-again-btn,
+  .leaderboard-button {
+    min-width: 120px;
+    padding: 12px 20px;
+    font-size: 15px;
+  }
 }

@@ -41,8 +41,8 @@ export default function Leaderboard() {
   }, [rows, mode]);
 
   return (
-    <div className="lb-page">
-      <h1 className="lb-title">Leaderboard</h1>
+    <div className="leaderboard-container">
+      <h1 className="leaderboard-title">Leaderboard</h1>
 
       <div className="lb-tabs" role="tablist" aria-label="Leaderboard tabs">
         <button

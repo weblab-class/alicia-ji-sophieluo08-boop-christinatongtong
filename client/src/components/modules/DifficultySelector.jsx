@@ -25,8 +25,8 @@ const DifficultySelector = ({ onDifficultySelect }) => {
       id: "hard",
       name: "Hard",
       gridSize: 4,
-      timeLimit: 20,
-      description: "4×4 grid, 20 seconds to memorize",
+      timeLimit: 30,
+      description: "4×4 grid, 30 seconds to memorize",
       colorBank: 4,
     },
   ];

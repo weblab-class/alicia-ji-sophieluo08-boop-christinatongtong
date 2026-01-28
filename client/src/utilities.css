@@ -4,11 +4,11 @@
 * and can be used to add general styles; variable definitions
 * for colors; and styles to html, body, and other high level
 * DOMs.
-* 
+*
 * All utility classes start with a `u-` and all do
 * one basic CSS thing (for example, making the font-weight
 * 600 for bolding) or are super generic.
-* 
+*
 * This is 𝙉𝙊𝙏 the place to define classes for components or
 * do rigorous styling. You shoud not need to change this file
 * much after initial creation.
@@ -31,11 +31,26 @@
   --l: 24px;
 }
 
+html {
+  background-color: white;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: "Roboto", sans-serif;
   font-weight: 300;
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 form {

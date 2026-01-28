@@ -85,6 +85,7 @@ const ColorGrid = ({
   const [serverScore, setServerScore] = useState(null);
   const [serverAccuracy, setServerAccuracy] = useState(null);
 
+  const [timeRanOut, setTimeRanOut] = useState(false); // Track if time ran out
 
   const playIntervalRef = useRef(null);
 
@@ -111,7 +112,10 @@ const ColorGrid = ({
       return () => clearInterval(playIntervalRef.current);
     } else if (phase === "play" && (isPaused || playTimer === 0)) {
       clearInterval(playIntervalRef.current);
-      if (playTimer === 0) setPhase("gameover");
+      if (playTimer === 0) {
+        setTimeRanOut(true);
+        setPhase("gameover");
+      }
     }
     return () => clearInterval(playIntervalRef.current);
   }, [phase, playTimer, isPaused]);
@@ -284,11 +288,45 @@ const ColorGrid = ({
 
   return (
     <div className="color-grid-wrapper">
-      {(phase === "memorize" || phase === "play") && (
-        <div className="timer-display">
-          {phase === "memorize" ? timer : playTimer}s
-        </div>
-      )}
+      <button
+        className="game-logo-button"
+        onClick={handleGoHome}
+        aria-label="Go to home page"
+      >
+        <img
+          src="/paint_bucket.png"
+          alt="PALETTE Logo"
+          className="game-logo"
+        />
+      </button>
+
+      <div className="timer-score-wrapper">
+        {(phase === "memorize" || phase === "play") && (
+          <div className="timer-display">
+            {phase === "memorize" ? timer : playTimer}s
+          </div>
+        )}
+        {phase === "gameover" && (
+          <div className="score-details">
+            <div className="score-title">Your Score</div>
+            {mode === "grid" ? (
+              <>
+                <div className="score-percentage">{points}</div>
+                <div className="score-matches">
+                  {correctMatches} out of {svgRegionCount} correct
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="score-percentage">{percentage}%</div>
+                <div className="score-matches">
+                  {correctMatches} out of {svgRegionCount} correct
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Memorize Phase - Show colored drawing */}
       {phase === "memorize" && showColorGrid && (
@@ -380,7 +418,10 @@ const ColorGrid = ({
 
           {/* Done button appears when all squares are filled and not paused */}
           {isGridFull && !isPaused && (
-            <button className="done-btn" onClick={() => setPhase("gameover")}>
+            <button className="done-btn" onClick={() => {
+              setTimeRanOut(false);
+              setPhase("gameover");
+            }}>
               Done
             </button>
           )}
@@ -472,7 +513,7 @@ const ColorGrid = ({
             </div>
           </div>
 
-          <div className="score-details">
+          {/* <div className="score-details">
            <div className="score-title">Your Score</div>
            {mode === "grid" ? (
              <>
@@ -489,7 +530,7 @@ const ColorGrid = ({
                </div>
              </>
            )}
-         </div>
+         </div> */}
 
           <div className="button-group">
             <button className="play-again-btn" onClick={() => window.location.href = "/"}>

@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Bodega';
+  src: url('/csbodega.otf') format('opentype');
+}
+
+html:has(.home-container) {
+  background-color: black;
+}
+
 .home-container {
   display: flex;
   align-items: center;
@@ -34,21 +43,21 @@
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
-  padding: 20px;
+  padding: 15px;
   min-height: 160px;
   flex: 1 1 280px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   color: white;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .mode-preview {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   opacity: 0.9;
 }
 
@@ -66,7 +75,7 @@
 
 .mode-button {
   width: 100%;
-  padding: 18px;
+  padding: 14px 18px;
   border-radius: 12px;
   border: none;
   font-weight: 800;
@@ -98,7 +107,8 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
-  font-family: Luckiest Guy;
+  font-family: 'Bodega';
+  letter-spacing: 8px;
 }
 
 .app-logo {
@@ -249,26 +259,82 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .app-title {
-    font-size: 80px;
-  }
-
-  .app-logo {
-    width: 70px;
-    height: 70px;
+  .home-container {
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 
   .home-content {
-    gap: 30px;
+    gap: 20px;
     padding: 20px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .app-title {
+    font-size: 40px;
+    text-align: left;
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+
+  .app-logo {
+    width: 40px;
+    height: 40px;
   }
 
   .mode-select {
     flex-direction: column;
+    width: 100%;
+  }
+
+  .mode-card.big {
+    min-height: 90px;
+    padding: 12px;
+    gap: 6px;
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+
+  .mode-preview {
+    margin-bottom: 2px;
+  }
+
+  .mode-preview svg {
+    width: 70px;
+    height: 70px;
+  }
+
+  .mode-button {
+    width: auto;
+    min-width: 150px;
+    max-width: 180px;
+    padding: 12px 18px;
+    font-size: 16px;
   }
 
   .play-button {
     font-size: 20px;
     padding: 18px 50px;
+  }
+
+  .modal-content {
+    padding: 12px;
+  }
+
+  .modal-header {
+    margin-bottom: 5px;
+  }
+
+  .login-section {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .login-prompt {
+    text-align: center;
+    width: 100%;
   }
 }

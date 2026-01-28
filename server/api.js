@@ -91,12 +91,11 @@ function generatePattern(gridSize, difficulty, colorBank = null) {
 }
 
 // get memorization time limit based on difficulty
-// currently all set to 20 seconds
 function getTimeLimit(difficulty) {
   const limits = {
     easy: 20,
     medium: 20,
-    hard: 20,
+    hard: 30,
   };
   return limits[difficulty] || 15;
 }

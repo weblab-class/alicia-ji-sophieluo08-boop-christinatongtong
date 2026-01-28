@@ -286,9 +286,38 @@ export default function DrawingGrid({
   return (
     <div style={{
       width: '100%',
-      maxWidth: '420px',
-      margin: '20px auto'
+      maxWidth: '500px',
+      margin: '20px auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
     }}>
+      {/* Easel */}
+      <div style={{
+        width: '100%',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+        {/* Canvas */}
+        <div style={{
+          width: '100%',
+          maxWidth: '420px',
+          aspectRatio: '1',
+          background: 'linear-gradient(135deg, #f5f3f0 0%, #ebe7e1 100%)',
+          border: '12px solid #8b6f47',
+          borderRadius: '4px',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+          padding: '0px',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
       <svg
         viewBox={svgContent.viewBox}
         className={`drawing-svg ${!isPaused && selectedColor ? 'paintbrush-cursor' : ''}`}
@@ -296,16 +325,15 @@ export default function DrawingGrid({
         aria-label="Coloring drawing"
         style={{
           width: '100%',
-          height: 'auto',
+          height: '100%',
           display: 'block',
-          background: '#fafafa',
-          border: '2px solid #ddd',
-          borderRadius: '8px',
+          background: 'transparent',
           cursor: isPaused
             ? 'not-allowed'
             : (selectedColor
               ? `url('/paint-brush.png') 8 24, pointer`
-              : 'pointer')
+              : 'pointer'),
+          objectFit: 'contain'
         }}
       >
         {svgRegions.map((region) => {
@@ -352,6 +380,8 @@ export default function DrawingGrid({
           );
         })}
       </svg>
+        </div>
+      </div>
     </div>
   );
 }
