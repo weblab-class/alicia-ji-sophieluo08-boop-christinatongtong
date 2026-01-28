@@ -50,3 +50,50 @@
     font-family: "Luckiest Guy";
     font-style: normal;
   }
+
+  /* Mobile Responsive Styles */
+  @media (max-width: 768px) {
+    .leaderboard-title {
+      font-size: 40px;
+      margin-top: 60px;
+      margin-bottom: 20px;
+    }
+
+    .lb-row {
+      padding: 10px 12px;
+      margin: 0 auto 8px;
+    }
+
+    .lb-score {
+      font-size: 16px;
+    }
+
+    .lb-name,
+    .lb-time {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .leaderboard-title {
+      font-size: 32px;
+      margin-top: 50px;
+    }
+
+    .lb-row {
+      padding: 8px 10px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .lb-left {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .lb-name {
+      text-align: left;
+      width: 100%;
+    }
+  }

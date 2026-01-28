@@ -31,3 +31,25 @@
   opacity: 0.9;
   stroke: #222;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .drawing-grid-wrapper {
+    max-width: 100%;
+    margin: 15px auto;
+  }
+
+  .drawing-svg {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .drawing-grid-wrapper {
+    margin: 10px auto;
+  }
+
+  .drawing-svg {
+    max-width: 95vw;
+  }
+}
