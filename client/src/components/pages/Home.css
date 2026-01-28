@@ -325,4 +325,16 @@ html:has(.home-container) {
   .modal-header {
     margin-bottom: 5px;
   }
+
+  .login-section {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .login-prompt {
+    text-align: center;
+    width: 100%;
+  }
 }
