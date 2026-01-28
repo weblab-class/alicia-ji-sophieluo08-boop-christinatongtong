@@ -232,6 +232,18 @@ const ColorGrid = ({
 
   return (
     <div className="color-grid-wrapper">
+      <button
+        className="game-logo-button"
+        onClick={handleGoHome}
+        aria-label="Go to home page"
+      >
+        <img
+          src="/paint_bucket.png"
+          alt="PALETTE Logo"
+          className="game-logo"
+        />
+      </button>
+
       <div className="timer-display">
         {phase === "memorize" ? timer : playTimer}s
       </div>
