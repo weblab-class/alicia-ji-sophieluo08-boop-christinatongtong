@@ -1,3 +1,7 @@
+html:has(.home-container) {
+  background-color: black;
+}
+
 .home-container {
   display: flex;
   align-items: center;
