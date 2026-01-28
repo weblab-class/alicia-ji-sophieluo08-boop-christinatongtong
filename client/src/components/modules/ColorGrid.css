@@ -518,3 +518,159 @@
 .home-btn:active {
   transform: scale(0.98);
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+
+  .game-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .game-logo-button {
+    top: 12px;
+    left: 12px;
+  }
+
+  .color-grid-wrapper {
+    padding: 15px 10px;
+    gap: 20px;
+  }
+
+  .timer-display {
+    font-size: 36px;
+    min-width: 120px;
+  }
+
+  .play-content-wrapper {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .play-content-wrapper .color-grid-container>div {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .play-content-wrapper .color-grid-container .drawing-svg {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-width: min(90vw, 400px) !important;
+  }
+
+  .palette-wrapper {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .palette-color {
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .grid-container {
+    max-width: 100%;
+    min-width: auto;
+    gap: 10px;
+  }
+
+  .memorize-cell,
+  .play-cell {
+    min-height: 50px;
+  }
+
+  .ready-btn,
+  .done-btn {
+    padding: 16px 32px;
+    font-size: 18px;
+    min-height: 48px;
+  }
+
+  .phase-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .gameover-container {
+    padding: 20px 15px;
+  }
+
+  .comparison-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .comparison-section {
+    width: 100%;
+  }
+
+  .score-details {
+    padding: 20px 15px;
+  }
+
+  .score-title {
+    font-size: 24px;
+  }
+
+  .score-percentage {
+    font-size: 48px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .play-again-btn,
+  .leaderboard-button {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .timer-display {
+    font-size: 32px;
+  }
+
+  .phase-title {
+    font-size: 18px;
+  }
+
+  .color-grid-wrapper {
+    padding: 10px 5px;
+    gap: 15px;
+  }
+
+  .play-content-wrapper .color-grid-container .drawing-svg {
+    max-width: min(95vw, 350px) !important;
+  }
+
+  .grid-container {
+    gap: 8px;
+  }
+
+  .ready-btn,
+  .done-btn {
+    padding: 14px 28px;
+    font-size: 16px;
+  }
+
+  .palette-color {
+    min-width: 48px;
+    min-height: 48px;
+    width: 48px;
+    height: 48px;
+  }
+}
