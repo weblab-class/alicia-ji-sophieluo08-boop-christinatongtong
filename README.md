@@ -33,11 +33,24 @@ This project uses the following third-party libraries and APIs:
   - Used via `@react-oauth/google` (frontend) and `google-auth-library` (backend)
 - **Google Fonts** - Web font service - https://fonts.google.com/
   - **Roboto** font - https://fonts.google.com/specimen/Roboto
-  - **Luckiest Guy** font - https://fonts.google.com/specimen/Luckiest+Guy
+
+### Custom Fonts
+- **CS Bodega** (csbodega.otf) - Craft Supply Co - https://www.fontspace.com/cs-bodega-font-f147388
+  - Used for main title and page headings
 
 ### Database
 - **MongoDB** - NoSQL database - https://www.mongodb.com/
   - Accessed via MongoDB Atlas cloud service - https://www.mongodb.com/cloud/atlas
 
-All dependencies are listed in `package.json` and can be installed via `npm install`.
+### Assets & Media
+- **SVG Drawings** (public/drawings/)
+  - apple.svg - https://www.freepik.com/free-vector/outline-style-apple_148852686.htm#fromView=keyword&page=40&position=0&uuid=f5a1eef3-b1d1-4bd9-83f9-94ec85bf4596&query=Outline+berry (Modified)
+  - bear.svg - https://svgcollections.com/design/adorable-bear-outline-svg-2/ (Modified)
+  - pug.svg - https://stock.adobe.com/search?k=dog+with+glasses+silhouette&asset_id=1652276422 (Modfied)
+  - snake.svg - https://www.freepik.com/free-vector/hand-drawn-flat-design-snake-outline_22340381.htm#fromView=keyword&page=1&position=0&uuid=7a4fb980-0902-49f1-8bf4-367b64b0617f&query=Cute+baby+animals+line+art+snake (Modified)
 
+- **Icons & Images** (public/)
+  - paint-brush.png - https://www.flaticon.com/free-icon/paint-brush_103414?term=paint+brush&page=1&position=7&origin=tag&related_id=103414
+  - paint_bucket.png - https://www.shareicon.net/color-pail-fill-painting-bucket-colour-696104
+
+All dependencies are listed in `package.json` and can be installed via `npm install`.
