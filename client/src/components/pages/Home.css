@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Bodega';
+  src: url('/csbodega.otf') format('opentype');
+}
+
+html:has(.home-container) {
+  background-color: black;
+}
+
 .home-container {
   display: flex;
   align-items: center;
@@ -98,7 +107,8 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
-  font-family: Luckiest Guy;
+  font-family: 'Bodega';
+  letter-spacing: 8px;
 }
 
 .app-logo {

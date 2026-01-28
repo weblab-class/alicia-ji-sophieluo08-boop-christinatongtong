@@ -21,7 +21,7 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div style={{ padding: "24px" }}>
+    <div className="leaderboard-container">
       <h1 className="leaderboard-title">Leaderboard</h1>
 
       {error && <p>{error}</p>}

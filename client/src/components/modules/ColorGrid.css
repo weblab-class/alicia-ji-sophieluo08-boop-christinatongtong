@@ -7,6 +7,8 @@
   width: 100%;
   padding: 20px;
   position: relative;
+  background-color: white;
+  min-height: 100vh;
 }
 
 .game-logo-button {
@@ -535,17 +537,20 @@
   transition: all 0.3s ease;
 }
 
-.play-again-btn {
+.play-again-btn,
+.leaderboard-button {
   background-color: #667eea;
   color: white;
 }
 
-.play-again-btn:hover {
+.play-again-btn:hover,
+.leaderboard-button:hover {
   background-color: #5568d3;
   transform: scale(1.05);
 }
 
-.play-again-btn:active {
+.play-again-btn:active,
+.leaderboard-button:active {
   transform: scale(0.98);
 }
 

@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'Bodega';
+  src: url('/csbodega.otf') format('opentype');
+}
+
+.leaderboard-container {
+  padding: 24px;
+  background-color: white;
+  min-height: 100vh;
+}
+
 .lb-row {
     display: flex;
     justify-content: space-between;
@@ -41,7 +52,8 @@
     margin-bottom: 24px;
     margin-top: 55px;
     position: relative;
-    font-family: "Luckiest Guy";
+    font-family: 'Bodega';
+    letter-spacing: 8px;
     font-style: normal;
   }
 
