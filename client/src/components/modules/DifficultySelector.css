@@ -89,16 +89,47 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .difficulty-selector {
+    padding: 0;
+  }
+
+  .difficulty-title {
+    margin-bottom: 8px;
+    margin-top: 0;
+  }
+
+  .difficulty-options {
+    gap: 12px;
+    padding: 0;
+  }
+
   .difficulty-card {
-    padding: 20px;
+    padding: 10px 16px;
   }
 
   .difficulty-name {
-    font-size: 24px;
+    font-size: 20px;
+    margin-bottom: 6px;
   }
 
   .difficulty-details {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 8px;
+    padding: 4px 0;
+  }
+
+  .detail-item {
+    flex-direction: row;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .detail-label {
+    font-size: 11px;
+  }
+
+  .detail-value {
+    font-size: 16px;
   }
 }
