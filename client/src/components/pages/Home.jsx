@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { UserContext } from "../App";
 import DifficultySelector from "../modules/DifficultySelector";
 import "./Home.css";
@@ -57,11 +57,6 @@ const Home = () => {
     setShowDifficultyModal(false);
   };
 
-  const handleLogoutClick = () => {
-    googleLogout();
-    handleLogout();
-  };
-
   return (
     <div className="home-container">
       <div className="home-content">
@@ -116,9 +111,6 @@ const Home = () => {
                 <button className="mode-button" onClick={startPictureMode}>Picture Mode</button>
               </div>
             </div>
-            <button className="logout-button" onClick={handleLogoutClick}>
-              Logout
-            </button>
 
             {showDifficultyModal && (
               <div className="modal-backdrop" onClick={handleCloseModal}>
