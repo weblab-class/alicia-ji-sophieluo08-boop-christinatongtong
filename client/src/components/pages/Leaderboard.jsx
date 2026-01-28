@@ -71,22 +71,33 @@ export default function Leaderboard() {
         <p className="lb-empty">No completed games yet.</p>
       )}
 
-      <div className="lb-list">
-        {sorted.map((g, i) => (
-          <div className="lb-row" key={g.gameId || i}>
-            <div className="lb-left">
-            <div className="lb-score">
-            {mode === "grid" ? (
-                <ScoreCell value={g.score} />
-            ) : (`${g.accuracy}%`)}
-            </div>
-              <div className="lb-time">{g.timeTaken}s</div>
-            </div>
-
-            <div className="lb-name">{g.userName || "Anonymous"}</div>
+      {!error && sorted.length > 0 && (
+        <>
+          <div className="lb-header">
+            <div className="lb-header-cell">Rank</div>
+            <div className="lb-header-cell">Points</div>
+            <div className="lb-header-cell">Time</div>
+            <div className="lb-header-cell">Name</div>
           </div>
-        ))}
-      </div>
+
+          <div className="lb-list">
+            {sorted.map((g, i) => (
+              <div className={`lb-row ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : ''}`} key={g.gameId || i}>
+                <div className="lb-cell lb-rank">{i + 1}</div>
+                <div className="lb-cell lb-score">
+                  {mode === "grid" ? (
+                    <ScoreCell value={g.score} />
+                  ) : (
+                    g.accuracy
+                  )}
+                </div>
+                <div className="lb-cell lb-time">{g.timeTaken}s</div>
+                <div className="lb-cell lb-name">{g.userName || "Anonymous"}</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
