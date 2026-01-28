@@ -81,6 +81,10 @@ const ColorGrid = ({
   const [showColorGrid, setShowColorGrid] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [svgRegionCount, setSvgRegionCount] = useState(gridSize * gridSize); // Track actual region count
+  const [showMeme, setShowMeme] = useState(false);
+  const [serverScore, setServerScore] = useState(null);
+  const [serverAccuracy, setServerAccuracy] = useState(null);
+
 
   const playIntervalRef = useRef(null);
 
@@ -151,6 +155,15 @@ const ColorGrid = ({
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
+  const getResultMessage = () => {
+    // tailor thresholds however you want
+    if (percentage >= 90) return "Pure Genius!";
+    if (percentage >= 70) return "Great job!";
+    if (percentage >= 50) return "Not bad!";
+    return "Try again...?";
+  };
+
+
   // Check if all regions are filled
   const isGridFull = Object.keys(fills).length === svgRegionCount &&
     Object.values(fills).every((color) => color !== null);
@@ -170,10 +183,23 @@ const ColorGrid = ({
     });
 
     const percentage = Math.round((correctMatches / svgRegionCount) * 100);
-    return { correctMatches, percentage };
-  };
+       // Calculate points for grid mode with difficulty multipliers
 
-  const { correctMatches, percentage } = calculateScore();
+    let points = 0;
+    if (mode === "grid") {
+     const difficultyMultiplier = {
+       easy: 1,
+       medium: 1.5,
+       hard: 2,
+     }[difficulty] || 1;
+     points = Math.round(percentage * difficultyMultiplier);
+   }
+
+   return { correctMatches, percentage, points };
+ };
+
+
+ const { correctMatches, percentage, points } = calculateScore();
 
   // Create grid style based on gridSize
   const gridStyle = {
@@ -200,9 +226,27 @@ const ColorGrid = ({
   });
 
 
+  const normalizedPattern = {};
+  for (const [k, v] of Object.entries(fills)) {
+    normalizedPattern[k] = getColorName(v);
+  }
+
 
   // submit scores to backend
   const submittedRef = useRef(false);
+
+  useEffect(() => {
+    if (phase !== "gameover") return;
+
+    const isSixtySeven = percentage === 67 || correctMatches === 67;
+    if (!isSixtySeven) return;
+
+    const timer = setTimeout(() => {
+      setShowMeme(true);
+    }, 1800); // 1.5 seconds delay
+
+    return () => clearTimeout(timer);
+  }, [phase, percentage, correctMatches]);
 
   useEffect(() => {
     if (phase !== "gameover") return;
@@ -219,22 +263,32 @@ const ColorGrid = ({
       return;
     }
 
+
     post("/api/game/submit", {
       gameId,
-      userPattern: fills,   // object mapping regionId -> color
+      userPattern: normalizedPattern,
       timeTaken,
-    }).catch((err) => {
-      console.error("Failed to submit game:", err);
-    });
+    })
+      .then((res) => {
+        setServerScore(res.score);
+        setServerAccuracy(res.accuracy);
+      })
+      .catch((err) => {
+        console.error("Failed to submit game:", err);
+      });
+
   }, [phase, gameId, fills, playTimer, playTimeLimit]);
+
 
 
 
   return (
     <div className="color-grid-wrapper">
-      <div className="timer-display">
-        {phase === "memorize" ? timer : playTimer}s
-      </div>
+      {(phase === "memorize" || phase === "play") && (
+        <div className="timer-display">
+          {phase === "memorize" ? timer : playTimer}s
+        </div>
+      )}
 
       {/* Memorize Phase - Show colored drawing */}
       {phase === "memorize" && showColorGrid && (
@@ -336,7 +390,29 @@ const ColorGrid = ({
       {/* Game Over Phase */}
       {phase === "gameover" && (
         <div className="gameover-container">
-          <div className="phase-title">Time's up!</div>
+
+
+
+          {showMeme && (
+            <div className="meme-overlay" onClick={() => setShowMeme(false)}>
+              <div className="meme-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="meme-title">Nice! You just scored 67</div>
+
+                <img
+                  className="meme-img"
+                  src="/six_seven.gif"
+                  alt="67 meme"
+                />
+
+                <button className="meme-close" onClick={() => setShowMeme(false)}>
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+
+
+          <div className="result-title">{getResultMessage()}</div>
 
           <div className="comparison-container">
             {/* Original Drawing */}
@@ -397,24 +473,37 @@ const ColorGrid = ({
           </div>
 
           <div className="score-details">
-            <div className="score-title">Your Score</div>
-            <div className="score-percentage">{percentage}%</div>
-            <div className="score-matches">
-              {correctMatches} out of {svgRegionCount} correct
-            </div>
-          </div>
+           <div className="score-title">Your Score</div>
+           {mode === "grid" ? (
+             <>
+               <div className="score-percentage">{serverScore}</div>
+               <div className="score-matches">
+                 {correctMatches} out of {svgRegionCount} correct
+               </div>
+             </>
+           ) : (
+             <>
+               <div className="score-percentage">{(serverAccuracy ?? percentage)}%</div>
+               <div className="score-matches">
+                 {correctMatches} out of {svgRegionCount} correct
+               </div>
+             </>
+           )}
+         </div>
 
           <div className="button-group">
             <button className="play-again-btn" onClick={() => window.location.href = "/"}>
               Play Again
             </button>
 
-            <button className="result-button leaderboard-button" onClick={() => navigate("/leaderboard")}>
+            <button className="play-again-btn" onClick={() => navigate("/leaderboard")}>
               Leaderboard
             </button>
           </div>
         </div>
       )}
+
+
     </div>
   );
 };
