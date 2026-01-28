@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   name: String,
   googleid: String,
+  email: String,
   // statistics
   gamesPlayed: {
     type: Number,
@@ -12,6 +13,11 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
+  bestGridScore: { type: Number, default: 0 },
+
+  bestDrawingAccuracy: { type: Number, default: 0 },
+
   averageAccuracy: {
     type: Number,
     default: 0,

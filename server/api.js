@@ -114,7 +114,7 @@ function getPlayTimeLimit(difficulty) {
 // calculate score and accuracy
 // correctPattern and userPattern are objects: { "0": "red", "1": "blue", ... }
 // check if each square matches
-function calculateScore(correctPattern, userPattern, timeTaken, timeLimit) {
+function calculateScore(correctPattern, userPattern, timeTaken, timeLimit, difficulty, mode) {
   const totalSquares = Object.keys(correctPattern).length;
 
   let perfectMatches = 0;
@@ -133,23 +133,34 @@ function calculateScore(correctPattern, userPattern, timeTaken, timeLimit) {
   const userSquares = Object.keys(userPattern).length;
   const missingSquares = totalSquares - userSquares;
 
-  // accuracy: perfect matches / total squares (percentage)
-  const accuracy = totalSquares > 0 ? (perfectMatches / totalSquares) * 100 : 0;
+  let adjustedAccuracy;
 
-  // penalize missing squares (reduce accuracy)
-  const missingPenalty = (missingSquares / totalSquares) * 100;
-  const adjustedAccuracy = Math.max(0, accuracy - missingPenalty);
+  if (mode === "drawing") {
+    // grade only what the user actually colored
+    adjustedAccuracy = userSquares === 0 ? 0 : (perfectMatches / userSquares) * 100;
+  } else {
+    // grid: grade against all squares, and keep your missing penalty
+    const accuracy = totalSquares > 0 ? (perfectMatches / totalSquares) * 100 : 0;
+    const missingPenalty = (missingSquares / totalSquares) * 100;
+    adjustedAccuracy = Math.max(0, accuracy - missingPenalty);
+  }
 
   // timeTaken = how long user took to complete the recoloring
   // calculate time bonus for faster completion
-  const maxBonusTime = timeLimit / 2;
-  const timeBonus = Math.max(0.5, Math.min(1.0, 1 - (timeTaken / (maxBonusTime * 2))));
-
-  // score = accuracy * time bonus * 100 (max score = 100)
-  const score = Math.round(adjustedAccuracy * timeBonus);
+  let score;
+  if (mode === "grid") {
+    const mult = { easy: 1, medium: 1.5, hard: 2 }[difficulty] || 1;
+    score = Math.round(adjustedAccuracy * mult);   // "points"
+  } else {
+    // keep your existing drawing scoring logic
+    const maxBonusTime = timeLimit / 2;
+    const timeBonus = Math.max(0.5, Math.min(1.0, 1 - (timeTaken / (maxBonusTime * 2))));
+    score = Math.round(adjustedAccuracy * timeBonus);
+    score = Math.min(100, score);
+  }
 
   return {
-    score: Math.min(100, score),
+    score: score,
     accuracy: Math.round(adjustedAccuracy * 10) / 10,
     perfectMatches,
     wrongMatches,
@@ -164,6 +175,10 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
   const { gridSize, difficulty, mode } = req.body;
 
   // Validate input
+  if (!["grid", "drawing"].includes(mode)) {
+    return res.status(400).send({ err: "mode must be grid or drawing" });
+  }
+
   if (!gridSize || !difficulty) {
     return res.status(400).send({ err: "gridSize and difficulty are required" });
   }
@@ -188,6 +203,7 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
   // create game in database
   const game = new Game({
     userId: req.user._id,
+    mode,
     gridSize,
     difficulty,
     correctPattern,
@@ -203,6 +219,7 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
       // return game info (including pattern since users need to see it during memorization)
       res.send({
         gameId: savedGame._id,
+        mode: savedGame.mode,
         gridSize: savedGame.gridSize,
         difficulty: savedGame.difficulty,
         timeLimit: savedGame.timeLimit,
@@ -247,7 +264,9 @@ router.post("/game/submit", auth.ensureLoggedIn, (req, res) => {
         game.correctPattern,
         userPattern,
         timeTaken,
-        game.timeLimit
+        game.playTimeLimit,
+        game.difficulty,
+        game.mode
       );
 
       // update game with results
@@ -263,8 +282,13 @@ router.post("/game/submit", auth.ensureLoggedIn, (req, res) => {
       // update user statistics
       return User.findById(req.user._id).then((user) => {
         user.gamesPlayed += 1;
-        if (game.score > user.bestScore) {
-          user.bestScore = game.score;
+
+        if (game.mode === "grid") {
+          if (game.score > (user.bestGridScore ?? 0)) user.bestGridScore = game.score;
+          // optional: keep old field in sync
+          if (game.score > (user.bestScore ?? 0)) user.bestScore = game.score;
+        } else if (game.mode === "drawing") {
+          if (game.accuracy > (user.bestDrawingAccuracy ?? 0)) user.bestDrawingAccuracy = game.accuracy;
         }
 
         // calculate new average accuracy
@@ -286,6 +310,7 @@ router.post("/game/submit", auth.ensureLoggedIn, (req, res) => {
     .then((game) => {
       res.send({
         gameId: game._id,
+        mode: game.mode,
         score: game.score,
         accuracy: game.accuracy,
         correctPattern: game.correctPattern,
@@ -312,6 +337,7 @@ router.get("/game/:gameId", auth.ensureLoggedIn, (req, res) => {
 
       res.send({
         gameId: game._id,
+        mode: game.mode,
         gridSize: game.gridSize,
         difficulty: game.difficulty,
         status: game.status,
@@ -332,32 +358,76 @@ router.get("/game/:gameId", auth.ensureLoggedIn, (req, res) => {
 
 // GET /api/stats/leaderboard
 // get top scores
-router.get("/stats/leaderboard", (req, res) => {
-  const limit = parseInt(req.query.limit) || 10;
-  const sortBy = req.query.sortBy || "score";
+router.get("/stats/leaderboard", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const mode = req.query.mode || "grid"; // "grid" | "drawing"
 
-  Game.find({ status: "completed" })
-    .sort({ [sortBy]: -1 })
-    .limit(limit)
-    .populate("userId", "name")
-    .then((games) => {
-      const leaderboard = games.map((game) => ({
-        gameId: game._id,
-        userName: game.userId.name,
-        score: game.score,
-        accuracy: game.accuracy,
-        gridSize: game.gridSize,
-        difficulty: game.difficulty,
-        timeTaken: game.timeTaken,
-        createdAt: game.createdAt,
-      }));
-      res.send(leaderboard);
-    })
-    .catch((err) => {
-      console.log(`Error fetching leaderboard: ${err}`);
-      res.status(500).send({ err: "Failed to fetch leaderboard" });
-    });
+    const match = { status: "completed", mode };
+
+    const sort =
+      mode === "grid"
+        ? { score: -1, timeTaken: 1, createdAt: 1 }
+        : { accuracy: -1, timeTaken: 1, createdAt: 1 };
+
+    const rows = await Game.aggregate([
+      { $match: match },
+      { $sort: sort },
+
+      // Keep ONLY the best result per user
+      {
+        $group: {
+          _id: "$userId",
+          gameId: { $first: "$_id" },
+          score: { $first: "$score" },
+          accuracy: { $first: "$accuracy" },
+          timeTaken: { $first: "$timeTaken" },
+          gridSize: { $first: "$gridSize" },
+          difficulty: { $first: "$difficulty" },
+          createdAt: { $first: "$createdAt" },
+          mode: { $first: "$mode" },
+        },
+      },
+
+      // Optional: re-sort after grouping, then take top N users
+      { $sort: sort },
+      { $limit: limit },
+
+      // Join user name
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+
+      {
+        $project: {
+          _id: 0,
+          userId: "$_id",
+          userName: { $ifNull: ["$user.name", "Anonymous"] },
+          gameId: 1,
+          score: 1,
+          accuracy: 1,
+          timeTaken: 1,
+          gridSize: 1,
+          difficulty: 1,
+          createdAt: 1,
+          mode: 1,
+        },
+      },
+    ]);
+
+    res.send(rows);
+  } catch (err) {
+    console.log(`Error fetching leaderboard: ${err}`);
+    res.status(500).send({ err: "Failed to fetch leaderboard" });
+  }
 });
+
 
 // GET /api/stats/user/:userId
 // get user stats
@@ -383,6 +453,8 @@ router.get("/stats/user/:userId", (req, res) => {
             userName: user.name,
             gamesPlayed: user.gamesPlayed,
             bestScore: user.bestScore,
+            bestGridScore: user.bestGridScore ?? 0,
+            bestDrawingAccuracy: user.bestDrawingAccuracy ?? 0,
             averageAccuracy: user.averageAccuracy,
             recentGames: recentGames.map((game) => ({
               gameId: game._id,

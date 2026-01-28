@@ -6,6 +6,13 @@ const GameSchema = new mongoose.Schema({
         ref: "user",
         required: true,
     },
+
+    mode: {
+        type: String,
+        enum: ["grid", "drawing"],
+        required: true
+    },
+
     gridSize: {
         type: Number,
         required: true,
