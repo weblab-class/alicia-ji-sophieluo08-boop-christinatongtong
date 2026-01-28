@@ -21,11 +21,19 @@ function verify(token) {
 function getOrCreateUser(user) {
   // the "sub" field means "subject", which is a unique identifier for each user
   return User.findOne({ googleid: user.sub }).then((existingUser) => {
-    if (existingUser) return existingUser;
+    if (existingUser) {
+      // Update email if it's missing (for existing users)
+      if (!existingUser.email && user.email) {
+        existingUser.email = user.email;
+        return existingUser.save();
+      }
+      return existingUser;
+    }
 
     const newUser = new User({
       name: user.name,
       googleid: user.sub,
+      email: user.email,
     });
 
     return newUser.save();
