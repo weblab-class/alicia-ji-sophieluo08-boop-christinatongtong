@@ -1,93 +1,43 @@
-# How to code a webapp with this skeleton
+## Third-Party Libraries and APIs
 
-## Initial setup
+This project uses the following third-party libraries and APIs:
 
-All teammates will need (explained in weblab.is/hw0)
+### Frontend Libraries
+- **React** (^18.2.0) - UI library - https://react.dev/
+- **React DOM** (^18.2.0) - React rendering - https://react.dev/
+- **React Router** (^5.3.4) - Client-side routing - https://reactrouter.com/
+- **React Router DOM** (^6.0.0) - Browser routing for React Router - https://reactrouter.com/
+- **@react-oauth/google** (^0.12.1) - Google OAuth integration for React - https://www.npmjs.com/package/@react-oauth/google
+- **jwt-decode** (^3.1.2) - JWT token decoding - https://www.npmjs.com/package/jwt-decode
+- **socket.io-client** (^4.8.1) - Real-time client library - https://socket.io/
+- **core-js** (^3.8.1) - JavaScript standard library polyfills - https://github.com/zloirock/core-js
+- **url-loader** (^4.1.1) - Asset loader for webpack - https://www.npmjs.com/package/url-loader
 
-- A bash console (on Mac or Linux, this is Terminal. On Windows, we recommend Git Bash)
-- NodeJS version 18. If it is installed correctly, typing "node --version" should give v18.13.0 and "npm --version" should give 8.19.3, or higher.
-- Visual Studio Code (or another code editor)
-- the Prettier VSCode extension
+### Backend Libraries
+- **Express** (^4.17.1) - Web framework for Node.js - https://expressjs.com/
+- **Express Session** (^1.17.1) - Session middleware for Express - https://www.npmjs.com/package/express-session
+- **Mongoose** (^7.8.3) - MongoDB object modeling for Node.js - https://mongoosejs.com/
+- **Socket.io** (^4.8.1) - Real-time bidirectional event-based communication - https://socket.io/
+- **google-auth-library** (^6.1.3) - Google authentication library for Node.js - https://github.com/googleapis/google-auth-library-nodejs
+- **connect-ensure-login** (^0.1.1) - Authentication middleware for Express - https://www.npmjs.com/package/connect-ensure-login
+- **dotenv** (^16.0.3) - Environment variable loader - https://www.npmjs.com/package/dotenv
 
-Also, all of you will need to go through the MongoDB Atlas setup (https://bit.ly/mongo-setup).
+### Build Tools & Development Dependencies
+- **Vite** (^6.0.0) - Next generation frontend tooling - https://vitejs.dev/
+- **@vitejs/plugin-react-swc** (^3.0.0) - Vite plugin for React with SWC - https://github.com/vitejs/vite-plugin-react-swc
+- **vite-plugin-svgr** (^4.5.0) - SVG support for Vite - https://github.com/pd4d10/vite-plugin-svgr
+- **nodemon** (^3.1.9) - Development server with auto-restart - https://nodemon.io/
 
-Additionally for authentication, one of you will need to obtain a CLIENT_ID, instructions are at https://bit.ly/gauth-mit.
+### External APIs & Services
+- **Google OAuth API** - User authentication service - https://developers.google.com/identity/protocols/oauth2
+  - Used via `@react-oauth/google` (frontend) and `google-auth-library` (backend)
+- **Google Fonts** - Web font service - https://fonts.google.com/
+  - **Roboto** font - https://fonts.google.com/specimen/Roboto
+  - **Luckiest Guy** font - https://fonts.google.com/specimen/Luckiest+Guy
 
-## Downloading these files
+### Database
+- **MongoDB** - NoSQL database - https://www.mongodb.com/
+  - Accessed via MongoDB Atlas cloud service - https://www.mongodb.com/cloud/atlas
 
-First, you probably have a team repository somewhere (the link looks like: https://github.com/weblab-class/teammate1-teammate2-teammate3). You each should clone this (empty) repository by navigating to where you want your folder to be (**NOT in catbook**) and typing: git clone https://github.com/weblab-class/teammate1-teammate2-teammate3.git <-- with the correct link.
+All dependencies are listed in `package.json` and can be installed via `npm install`.
 
-Then, one of your team members will need to do the following:
-
-First on GitHub, download the skeleton (this repository) as a zip file, by clicking Code -> Download as ZIP. (Do not clone it, since this will download extra files, like .git, which will lead to GitHub being confused).
-
-Then, drag over all of the files in this skeleton into your team's folder. **Make sure to also drag over the hidden files!** To see these hidden files, navigate to the skeleton in Finder/File Explorer and press command+shift+period (mac) or View > Show > Hidden items (windows).
-
-The files/folders you must drag over are:
-
-- .gitignore (hidden)
-- .npmrc (hidden)
-- .prettierrc (hidden)
-- client (folder)
-- package-lock.json
-- package.json
-- README.md
-- server (folder)
-- vite.config.js
-
-Additionally, you must create a .env file in the root directory. See .env.example for an example of what this file should look like.
-
-Then, in terminal, navigate to your teams folder and push all of the files to your team's GitHub repository as usual:
-
-- git add -A
-- git commit -m "Skeleton code"
-- git push
-
-Now the rest of your teammates can pull all these files with a 'git pull'!
-
-Post on Piazza if you run into any issues
-
-## What you need to change in the skeleton
-
-- Change the Frontend CLIENT_ID (Skeleton.js) to your team's CLIENT_ID (obtain this at https://bit.ly/gauth-mit)
-- Change the Server CLIENT_ID to the same CLIENT_ID (auth.js)
-- Change the Database SRV (mongoConnectionURL) for Atlas (server.js). You got this in the MongoDB setup. remember to replace <password> and <dbname> (should be no < or > in your SRV) (From: https://bit.ly/mongo-setup)
-- Change the Database Name for MongoDB to whatever you put in the SRV to replace <dbname> (server.js)
-- (Optional) Add a favicon to your website at the path client/dist/favicon.ico
-- (Optional) Update website title in client/dist/index.html
-- (Optional) Update this README file ;)
-- (Optional) Update the package.json file with your app name :) (line 2)
-
-## How to run this skeleton
-
-First, 'npm install'
-Then open two separate terminals, and 'npm run dev' in the first, and 'npm start' in the second.
-Then open http://localhost:5173
-
-<!-- ## How to go from this skeleton to your actual app
-
-Check out this [How to Get Started Guide](http://weblab.is/get-started) -->
-
-## Socket stuff
-
-Note: we'll be getting to this in lecture in week 2, so don't worry if you don't know it yet
-
-- If you're not using realtime updating or don't need server->client communication, you can remove socket entirely! (server-socket.js, client-socket.js, and anything that imports them)
-- If you are using sockets, consider what you want to do with the FIXME in server-socket.js
-
-## Edit at your own risk
-
-the following files students do not need to edit. feel free to read them if you would like.
-
-```
-client/src/utilities.js
-client/src/client-socket.js
-server/validator.js
-server/server-socket.js
-.npmrc
-.prettierrc
-package-lock.json
-vite.config.js
-```
-
-## Good luck on your project :)
