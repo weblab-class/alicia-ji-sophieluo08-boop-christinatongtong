@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { get } from "../../utilities";
 import "./Leaderboard.css";
 
 export default function Leaderboard() {
-  const [mode, setMode] = useState("grid"); // "grid" | "drawing"
+  const location = useLocation();
+  const initialMode = location.state?.mode === "drawing" ? "drawing" : "grid";
+  const [mode, setMode] = useState(initialMode); // "grid" | "drawing"
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
 

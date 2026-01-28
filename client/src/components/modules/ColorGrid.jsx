@@ -187,23 +187,23 @@ const ColorGrid = ({
     });
 
     const percentage = Math.round((correctMatches / svgRegionCount) * 100);
-       // Calculate points for grid mode with difficulty multipliers
+    // Calculate points for grid mode with difficulty multipliers
 
     let points = 0;
     if (mode === "grid") {
-     const difficultyMultiplier = {
-       easy: 1,
-       medium: 1.5,
-       hard: 2,
-     }[difficulty] || 1;
-     points = Math.round(percentage * difficultyMultiplier);
-   }
+      const difficultyMultiplier = {
+        easy: 1,
+        medium: 1.5,
+        hard: 2,
+      }[difficulty] || 1;
+      points = Math.round(percentage * difficultyMultiplier);
+    }
 
-   return { correctMatches, percentage, points };
- };
+    return { correctMatches, percentage, points };
+  };
 
 
- const { correctMatches, percentage, points } = calculateScore();
+  const { correctMatches, percentage, points } = calculateScore();
 
   // Create grid style based on gridSize
   const gridStyle = {
@@ -537,7 +537,7 @@ const ColorGrid = ({
               Play Again
             </button>
 
-            <button className="play-again-btn" onClick={() => navigate("/leaderboard")}>
+            <button className="play-again-btn" onClick={() => navigate("/leaderboard", { state: { mode } })}>
               Leaderboard
             </button>
           </div>
