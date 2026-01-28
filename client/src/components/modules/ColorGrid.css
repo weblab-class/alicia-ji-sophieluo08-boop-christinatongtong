@@ -291,7 +291,7 @@
 }
 
 .play-cell.clickable {
-  cursor: url('/paint-brush.png') 8 24, pointer;
+  cursor: url('/paint-brush.png') 8 26, pointer;
 }
 
 /* Arrange up to 6 colors in a palette arc. Adjust positions as needed. */

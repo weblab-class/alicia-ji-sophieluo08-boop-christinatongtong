@@ -33,6 +33,7 @@ This project uses the following third-party libraries and APIs:
   - Used via `@react-oauth/google` (frontend) and `google-auth-library` (backend)
 - **Google Fonts** - Web font service - https://fonts.google.com/
   - **Roboto** font - https://fonts.google.com/specimen/Roboto
+  - **Luckiest Guy** font - https://fonts.google.com/specimen/Luckiest+Guy
 
 ### Custom Fonts
 - **CS Bodega** (csbodega.otf) - Craft Supply Co - https://www.fontspace.com/cs-bodega-font-f147388

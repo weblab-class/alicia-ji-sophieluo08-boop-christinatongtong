@@ -75,7 +75,7 @@ export default function Leaderboard() {
         <>
           <div className="lb-header">
             <div className="lb-header-cell">Rank</div>
-            <div className="lb-header-cell">Points</div>
+            <div className="lb-header-cell">{mode === "grid" ? "Points" : "Accuracy"}</div>
             <div className="lb-header-cell">Time</div>
             <div className="lb-header-cell">Name</div>
           </div>
@@ -88,7 +88,7 @@ export default function Leaderboard() {
                   {mode === "grid" ? (
                     <ScoreCell value={g.score} />
                   ) : (
-                    g.accuracy
+                    `${g.accuracy}%`
                   )}
                 </div>
                 <div className="lb-cell lb-time">{g.timeTaken}s</div>
