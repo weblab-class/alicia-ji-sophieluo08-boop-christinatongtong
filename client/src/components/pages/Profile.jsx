@@ -18,7 +18,6 @@ export default function Profile() {
       })
       .then(setStats)
       .catch((err) => {
-        console.error(err);
         setError("Could not load profile.");
       });
   }, []);

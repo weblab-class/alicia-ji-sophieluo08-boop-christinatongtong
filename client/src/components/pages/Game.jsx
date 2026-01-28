@@ -42,10 +42,6 @@ const Game = () => {
         });
         setGameData(response);
       } catch (err) {
-        console.error("Error creating game:", err);
-        console.error("Error type:", typeof err);
-        console.error("Error keys:", Object.keys(err || {}));
-        // error messages for debugging
         const errStr = String(err);
         if (errStr.includes("ECONNREFUSED") || errStr.includes("Failed to fetch")) {
           setError("Cannot connect to server. Please make sure the server is running.");

@@ -75,7 +75,6 @@ const Home = () => {
             <GoogleLogin
               onSuccess={handleLogin}
               onError={(err) => {
-                console.error("Google login error:", err);
                 alert("Google login failed. Please try again.");
               }}
             />

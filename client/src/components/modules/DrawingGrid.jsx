@@ -159,7 +159,6 @@ export default function DrawingGrid({
         setFills(newFills);
 
       } catch (err) {
-        console.error("Error loading SVG:", err);
         setError(err.message);
       } finally {
         setLoading(false);

@@ -228,7 +228,6 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(`Error creating game: ${err}`);
       res.status(500).send({ err: "Failed to create game" });
     });
 });
@@ -320,7 +319,6 @@ router.post("/game/submit", auth.ensureLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(`Error submitting game: ${err}`);
       res.status(500).send({ err: "Failed to submit game" });
     });
 });
@@ -350,7 +348,6 @@ router.get("/game/:gameId", auth.ensureLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(`Error fetching game: ${err}`);
       res.status(500).send({ err: "Failed to fetch game" });
     });
 });
@@ -422,7 +419,6 @@ router.get("/stats/leaderboard", async (req, res) => {
 
     res.send(rows);
   } catch (err) {
-    console.log(`Error fetching leaderboard: ${err}`);
     res.status(500).send({ err: "Failed to fetch leaderboard" });
   }
 });
@@ -468,14 +464,12 @@ router.get("/stats/user/:userId", (req, res) => {
         });
     })
     .catch((err) => {
-      console.log(`Error fetching user stats: ${err}`);
       res.status(500).send({ err: "Failed to fetch user stats" });
     });
 });
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
-  console.log(`API route not found: ${req.method} ${req.url}`);
   res.status(404).send({ msg: "API route not found" });
 });
 

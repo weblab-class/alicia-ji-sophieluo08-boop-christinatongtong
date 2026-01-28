@@ -263,7 +263,6 @@ const ColorGrid = ({
 
     // IMPORTANT: gameId must be real (created from backend)
     if (!gameId) {
-      console.warn("No gameId, cannot submit game.");
       return;
     }
 
@@ -278,7 +277,7 @@ const ColorGrid = ({
         setServerAccuracy(res.accuracy);
       })
       .catch((err) => {
-        console.error("Failed to submit game:", err);
+        // Error submitting game
       });
 
   }, [phase, gameId, fills, playTimer, playTimeLimit]);

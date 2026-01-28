@@ -28,7 +28,6 @@ export default function Leaderboard() {
     get(`/api/stats/leaderboard?limit=10&mode=${mode}`)
       .then((data) => setRows(Array.isArray(data) ? data : []))
       .catch((e) => {
-        console.error(e);
         setError("Could not load leaderboard.");
         setRows([]);
       });

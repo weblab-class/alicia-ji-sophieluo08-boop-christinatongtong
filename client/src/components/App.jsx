@@ -34,15 +34,12 @@ const App = () => {
         if (user && user._id) {
           setUserId(user._id);
           post("/api/initsocket", { socketid: socket.id }).catch((err) => {
-            console.error("Failed to initialize socket:", err);
+            // Failed to initialize socket
           });
-        } else {
-          console.error("Login response missing user._id:", user);
         }
       })
       .catch((error) => {
-        console.error("Login API error:", error);
-        alert("Login failed. Please check console for details.");
+        alert("Login failed. Please try again.");
       });
   };
 
