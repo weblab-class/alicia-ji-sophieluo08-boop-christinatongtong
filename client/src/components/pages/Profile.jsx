@@ -28,7 +28,7 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
-      <h1 className="profile-title">Profile</h1>
+      <h1 className="profile-title">profile</h1>
 
       <ul className="profile-list">
         <li>

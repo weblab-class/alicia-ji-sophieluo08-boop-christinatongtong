@@ -4,75 +4,88 @@
 }
 
 .profile-page {
-    max-width: 480px;
-    margin: 80px auto;
-    padding: 0 20px;
-    background-color: white;
-    min-height: 100vh;
+  max-width: 480px;
+  margin: 80px auto;
+  padding: 0 20px;
+  background-color: white;
+  min-height: 100vh;
+}
+
+.profile-title {
+  font-size: 80px;
+  font-weight: bold;
+  color: black;
+  margin: 0;
+  margin-bottom: 24px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Bodega';
+  letter-spacing: 8px;
+}
+
+.profile-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 20px;
+}
+
+.profile-list .label {
+  opacity: 0.6;
+}
+
+.profile-list .value {
+  font-weight: 600;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .profile-page {
+    margin: 60px auto;
+    padding: 0 15px;
   }
 
   .profile-title {
-    font-size: 50px;
-    font-weight: 700;
-    margin-bottom: 24px;
-    text-align: center;
-    font-family: 'Luckiest Guy';
-    letter-spacing: 2px;
+    font-size: 42px;
+    margin-bottom: 20px;
+    letter-spacing: 8px;
   }
 
   .profile-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 16px;
   }
 
   .profile-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    font-size: 20px;
+    font-size: 18px;
+    padding: 12px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-page {
+    margin: 50px auto;
+    padding: 0 10px;
   }
 
-  .profile-list .label {
-    opacity: 0.6;
+  .profile-title {
+    font-size: 32px;
+    letter-spacing: 8px;
   }
 
-  .profile-list .value {
-    font-weight: 600;
+  .profile-list {
+    padding: 20px 16px;
   }
 
-  /* Mobile Responsive Styles */
-  @media (max-width: 768px) {
-    .profile-page {
-      margin: 60px auto;
-      padding: 0 15px;
-    }
-
-    .profile-title {
-      font-size: 40px;
-      margin-bottom: 20px;
-    }
-
-    .profile-list li {
-      font-size: 20px;
-      padding: 12px 0;
-    }
+  .profile-list li {
+    font-size: 16px;
+    flex-direction: column;
+    gap: 5px;
   }
-
-  @media (max-width: 480px) {
-    .profile-page {
-      margin: 50px auto;
-      padding: 0 10px;
-    }
-
-    .profile-title {
-      font-size: 32px;
-    }
-
-    .profile-list li {
-      font-size: 18px;
-      flex-direction: column;
-      gap: 5px;
-    }
-  }
+}
