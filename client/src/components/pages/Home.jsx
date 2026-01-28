@@ -66,7 +66,7 @@ const Home = () => {
             alt="Paint bucket"
             className="app-logo"
           />
-          PALETTE
+          palette
         </h1>
 
         {!userId ? (
