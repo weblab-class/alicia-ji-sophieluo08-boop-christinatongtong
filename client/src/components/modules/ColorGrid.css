@@ -6,6 +6,46 @@
   gap: 30px;
   width: 100%;
   padding: 20px;
+  position: relative;
+}
+
+.game-logo-button {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: transparent !important;
+  border: none !important;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0;
+  z-index: 9999;
+  transition: transform 0.2s ease;
+}
+
+.game-logo-button:hover {
+  transform: scale(1.1);
+  background: transparent !important;
+}
+
+.game-logo-button:active {
+  transform: scale(0.95);
+  background: transparent !important;
+}
+
+.game-logo-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.game-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  background: transparent;
+  display: block;
+  /* Image is already transparent, no filters needed */
 }
 
 .timer-display {
