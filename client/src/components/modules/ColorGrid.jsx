@@ -170,10 +170,22 @@ const ColorGrid = ({
     });
 
     const percentage = Math.round((correctMatches / svgRegionCount) * 100);
-    return { correctMatches, percentage };
+
+    // Calculate points for grid mode with difficulty multipliers
+    let points = 0;
+    if (mode === "grid") {
+      const difficultyMultiplier = {
+        easy: 1,
+        medium: 5,
+        hard: 10,
+      }[difficulty] || 1;
+      points = Math.round(percentage * difficultyMultiplier);
+    }
+
+    return { correctMatches, percentage, points };
   };
 
-  const { correctMatches, percentage } = calculateScore();
+  const { correctMatches, percentage, points } = calculateScore();
 
   // Create grid style based on gridSize
   const gridStyle = {
@@ -398,10 +410,21 @@ const ColorGrid = ({
 
           <div className="score-details">
             <div className="score-title">Your Score</div>
-            <div className="score-percentage">{percentage}%</div>
-            <div className="score-matches">
-              {correctMatches} out of {svgRegionCount} correct
-            </div>
+            {mode === "grid" ? (
+              <>
+                <div className="score-percentage">{points}</div>
+                <div className="score-matches">
+                  {correctMatches} out of {svgRegionCount} correct
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="score-percentage">{percentage}%</div>
+                <div className="score-matches">
+                  {correctMatches} out of {svgRegionCount} correct
+                </div>
+              </>
+            )}
           </div>
 
           <div className="button-group">
