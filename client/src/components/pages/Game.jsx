@@ -38,6 +38,7 @@ const Game = () => {
         const response = await post("/api/game/create", {
           gridSize: difficultyData.gridSize,
           difficulty: difficultyData.difficulty,
+          mode: difficultyData.mode || "grid",
         });
         setGameData(response);
       } catch (err) {

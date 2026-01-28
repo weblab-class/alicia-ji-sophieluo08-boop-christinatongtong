@@ -44,20 +44,28 @@ router.post("/initsocket", (req, res) => {
 // | write your API methods below!|
 // |------------------------------|
 
-// get color bank based on difficulty
+// get color bank based on difficulty and mode
 // Randomly selects colors from the available color pool
-function getColorBank(difficulty) {
+// For drawing mode: uses 3-4 colors (randomly between 3 and 4)
+// For grid mode: uses difficulty-based color counts
+function getColorBank(difficulty, mode = "grid") {
   // All available colors from COLOR_MAP
   const allColors = ["red", "blue", "yellow", "green", "purple", "orange"];
 
-  // Number of colors to select based on difficulty
-  const colorCounts = {
-    easy: 2,
-    medium: 3,
-    hard: 4,
-  };
+  let count;
 
-  const count = colorCounts[difficulty] || 3;
+  if (mode === "drawing") {
+    // For drawings, randomly select 3 or 4 colors
+    count = Math.floor(Math.random() * 2) + 3; // Randomly 3 or 4
+  } else {
+    // For grid mode, use difficulty-based counts
+    const colorCounts = {
+      easy: 2,
+      medium: 3,
+      hard: 4,
+    };
+    count = colorCounts[difficulty] || 3;
+  }
 
   // Randomly shuffle and select the required number of colors
   const shuffled = [...allColors].sort(() => Math.random() - 0.5);
@@ -66,14 +74,16 @@ function getColorBank(difficulty) {
 
 // generate random pattern of colored squares
 // ex: { 0: "red", 1: "blue", 2: "green", ... }
-function generatePattern(gridSize, difficulty) {
+// colorBank parameter ensures the pattern uses the same colors as the stored colorBank
+function generatePattern(gridSize, difficulty, colorBank = null) {
   const totalSquares = gridSize * gridSize;
-  const colorBank = getColorBank(difficulty);
+  // Use provided colorBank or generate a new one
+  const bank = colorBank || getColorBank(difficulty);
 
   const pattern = {};
   for (let i = 0; i < totalSquares; i++) {
     // randomly select a color from the color bank for each square
-    const randomColor = colorBank[Math.floor(Math.random() * colorBank.length)];
+    const randomColor = bank[Math.floor(Math.random() * bank.length)];
     pattern[i.toString()] = randomColor;
   }
 
@@ -151,7 +161,7 @@ function calculateScore(correctPattern, userPattern, timeTaken, timeLimit) {
 // POST /api/game/create
 // create a new game
 router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
-  const { gridSize, difficulty } = req.body;
+  const { gridSize, difficulty, mode } = req.body;
 
   // Validate input
   if (!gridSize || !difficulty) {
@@ -166,9 +176,12 @@ router.post("/game/create", auth.ensureLoggedIn, (req, res) => {
     return res.status(400).send({ err: "difficulty must be easy, medium, or hard" });
   }
 
-  // generate pattern and time limit
-  const correctPattern = generatePattern(gridSize, difficulty);
-  const colorBank = getColorBank(difficulty);
+  // Use mode from request, default to "grid" if not provided
+  const gameMode = mode || "grid";
+
+  // generate colorBank first, then use it for pattern generation
+  const colorBank = getColorBank(difficulty, gameMode);
+  const correctPattern = generatePattern(gridSize, difficulty, colorBank);
   const timeLimit = getTimeLimit(difficulty);
   const playTimeLimit = getPlayTimeLimit(difficulty);
 
