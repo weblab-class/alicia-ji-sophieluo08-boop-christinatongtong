@@ -71,13 +71,27 @@ const Home = () => {
 
         {!userId ? (
           <div className="login-section">
-            <p className="login-prompt">Please log in to play</p>
+            <p className="login-prompt">login to play</p>
             <GoogleLogin
               onSuccess={handleLogin}
               onError={(err) => {
                 alert("Google login failed. Please try again.");
               }}
             />
+            <div className="login-canvas-decoration">
+              <div className="mini-canvas">
+                <img 
+                  src="/paint-brush.png" 
+                  alt="Animated brush" 
+                  className="animated-brush"
+                />
+                <div className="mini-palette">
+                  <div className="mini-palette-color"></div>
+                  <div className="mini-palette-color"></div>
+                  <div className="mini-palette-color"></div>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <>
