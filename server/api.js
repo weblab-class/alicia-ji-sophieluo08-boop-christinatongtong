@@ -110,48 +110,56 @@ function getPlayTimeLimit(difficulty) {
   return limits[difficulty] || 15;
 }
 
+// Grid: when mult=1 (use all time), score = accuracy (0-100). When mult=2, score scales to MAX.
+const MAX_SCORE_GRID = { easy: 300, medium: 600, hard: 900 };
+const M_MAX = 2.0;   // max time multiplier (finishing at t=0 gives mult = 2)
+const TIME_CURVE_P = 0.75;  // p < 1 = more lenient: multiplier stays higher as you use time
+
 // calculate score and accuracy
 // correctPattern and userPattern are objects: { "0": "red", "1": "blue", ... }
-// check if each square matches
+// timeLimit = play time limit for the level (T in the formula)
 function calculateScore(correctPattern, userPattern, timeTaken, timeLimit, difficulty, mode) {
-  const totalSquares = Object.keys(correctPattern).length;
+  const n = Object.keys(correctPattern).length;
 
   let perfectMatches = 0;
   let wrongMatches = 0;
 
   Object.keys(correctPattern).forEach((index) => {
     if (userPattern[index] === correctPattern[index]) {
-      // perfect match: correct square with correct color
       perfectMatches++;
     } else {
-      // wrong color in this position
       wrongMatches++;
     }
   });
 
+  const c = perfectMatches;
   const userSquares = Object.keys(userPattern).length;
-  const missingSquares = totalSquares - userSquares;
+  const missingSquares = n - userSquares;
 
   let adjustedAccuracy;
 
   if (mode === "drawing") {
-    // grade only what the user actually colored
     adjustedAccuracy = userSquares === 0 ? 0 : (perfectMatches / userSquares) * 100;
   } else {
-    // grid: grade against all squares, and keep your missing penalty
-    const accuracy = totalSquares > 0 ? (perfectMatches / totalSquares) * 100 : 0;
-    const missingPenalty = (missingSquares / totalSquares) * 100;
+    const accuracy = n > 0 ? (perfectMatches / n) * 100 : 0;
+    const missingPenalty = (missingSquares / n) * 100;
     adjustedAccuracy = Math.max(0, accuracy - missingPenalty);
   }
 
-  // timeTaken = how long user took to complete the recoloring
-  // calculate time bonus for faster completion
   let score;
+
   if (mode === "grid") {
-    const mult = { easy: 1, medium: 1.5, hard: 2 }[difficulty] || 1;
-    score = Math.round(adjustedAccuracy * mult);   // "points"
+    // Base = accuracy (0-100). mult=1 → score = accuracy; mult=2 → score scales to MAX per difficulty.
+    const MAX = MAX_SCORE_GRID[difficulty] ?? 300;
+    const T = Math.max(Number(timeLimit), 1);
+    const t = Math.max(0, Number(timeTaken));
+
+    const r = Math.max(0, Math.min(1, (T - t) / T));
+    const mult = 1 + (M_MAX - 1) * Math.pow(r, TIME_CURVE_P);
+    const scale = 1 + (mult - 1) * (MAX / 100 - 1);  // 1 at mult=1, MAX/100 at mult=2
+    const accuracyBase = n > 0 ? (c / n) * 100 : 0;
+    score = Math.round(accuracyBase * scale);
   } else {
-    // keep your existing drawing scoring logic
     const maxBonusTime = timeLimit / 2;
     const timeBonus = Math.max(0.5, Math.min(1.0, 1 - (timeTaken / (maxBonusTime * 2))));
     score = Math.round(adjustedAccuracy * timeBonus);
@@ -159,12 +167,12 @@ function calculateScore(correctPattern, userPattern, timeTaken, timeLimit, diffi
   }
 
   return {
-    score: score,
+    score,
     accuracy: Math.round(adjustedAccuracy * 10) / 10,
     perfectMatches,
     wrongMatches,
     missingSquares,
-    totalSquares,
+    totalSquares: n,
   };
 }
 
@@ -363,7 +371,7 @@ router.get("/stats/leaderboard", async (req, res) => {
 
     const sort =
       mode === "grid"
-        ? { score: -1, timeTaken: 1, createdAt: 1 }
+        ? { score: -1, createdAt: 1 }
         : { accuracy: -1, timeTaken: 1, createdAt: 1 };
 
     const rows = await Game.aggregate([

@@ -122,17 +122,13 @@ export default function DrawingGrid({
             normalizedFill === "rgb(255, 255, 255)";
 
           clonedElement.removeAttribute("fill");
-          // Remove class attribute to prevent CSS from applying
           if (hasSpecialClass) {
             clonedElement.removeAttribute("class");
           }
 
-          // Stroke: fillable regions get an outline; black (special color) regions get none
+          // Keep stroke if it exists
           const stroke = element.getAttribute("stroke");
-          if (isSpecialColor) {
-            clonedElement.setAttribute("stroke", "none");
-            clonedElement.removeAttribute("stroke-width");
-          } else if (!stroke || stroke === "none") {
+          if (!stroke || stroke === "none") {
             clonedElement.setAttribute("stroke", "#333");
             clonedElement.setAttribute("stroke-width", "2");
           }

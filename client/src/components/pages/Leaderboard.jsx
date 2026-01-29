@@ -48,13 +48,12 @@ export default function Leaderboard() {
       });
   }, []);
 
-  // Optional backup sort (in case backend changes)
   const sorted = useMemo(() => {
     const copy = [...rows];
     if (mode === "grid") {
-      return copy.sort((a, b) => (b.score - a.score) || (a.timeTaken - b.timeTaken));
+      return copy.sort((a, b) => (b.score - a.score) || ((a.createdAt || 0) - (b.createdAt || 0)));
     }
-    return copy.sort((a, b) => (b.accuracy - a.accuracy) || (a.timeTaken - b.timeTaken));
+    return copy.sort((a, b) => (b.accuracy - a.accuracy) || ((a.createdAt || 0) - (b.createdAt || 0)));
   }, [rows, mode]);
 
   // Only show a "best" value if user has attempted (non-null and not 0)
@@ -107,8 +106,7 @@ export default function Leaderboard() {
         <>
           <div className="lb-header">
             <div className="lb-header-cell">Rank</div>
-            <div className="lb-header-cell">{mode === "grid" ? "Points" : "Accuracy"}</div>
-            <div className="lb-header-cell">Time</div>
+            <div className="lb-header-cell">{mode === "grid" ? "Score" : "Accuracy"}</div>
             <div className="lb-header-cell">Name</div>
           </div>
 
@@ -130,7 +128,6 @@ export default function Leaderboard() {
                       `${g.accuracy}%`
                     )}
                   </div>
-                  <div className="lb-cell lb-time">{g.timeTaken}s</div>
                   <div className="lb-cell lb-name">{g.userName || "Anonymous"}</div>
                 </div>
               );
@@ -146,7 +143,6 @@ export default function Leaderboard() {
                     `${myBestValue}%`
                   )}
                 </div>
-                <div className="lb-cell lb-time">–</div>
                 <div className="lb-cell lb-name">{myStats.userName || "You"}</div>
               </div>
             )}

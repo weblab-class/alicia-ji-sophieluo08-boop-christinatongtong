@@ -84,7 +84,7 @@
 .lb-row,
 .lb-header {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr;
+  grid-template-columns: 1fr 1fr 2fr;
   gap: 10px;
   align-items: center;
   padding: 12px 16px;
