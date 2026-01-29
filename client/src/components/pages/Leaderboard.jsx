@@ -9,6 +9,7 @@ export default function Leaderboard() {
   const [mode, setMode] = useState(initialMode); // "grid" | "drawing"
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
+  const [myStats, setMyStats] = useState(null);
 
   const ScoreCell = ({ value }) => {
     if (value !== 67) return <span className="lb-score">{value}</span>;
@@ -21,17 +22,31 @@ export default function Leaderboard() {
     );
   };
 
-
-
+  // Load leaderboard rows for selected mode
   useEffect(() => {
     setError("");
     get(`/api/stats/leaderboard?limit=10&mode=${mode}`)
       .then((data) => setRows(Array.isArray(data) ? data : []))
-      .catch((e) => {
+      .catch(() => {
         setError("Could not load leaderboard.");
         setRows([]);
       });
   }, [mode]);
+
+  // Load current user's stats (best scores) once
+  useEffect(() => {
+    get("/api/whoami")
+      .then((user) => {
+        if (!user || !user._id) return null;
+        return get(`/api/stats/user/${user._id}`);
+      })
+      .then((stats) => {
+        if (stats) setMyStats(stats);
+      })
+      .catch(() => {
+        // Ignore profile errors here; leaderboard can still show
+      });
+  }, []);
 
   // Optional backup sort (in case backend changes)
   const sorted = useMemo(() => {
@@ -41,6 +56,18 @@ export default function Leaderboard() {
     }
     return copy.sort((a, b) => (b.accuracy - a.accuracy) || (a.timeTaken - b.timeTaken));
   }, [rows, mode]);
+
+  const myBestValue = useMemo(() => {
+    if (!myStats) return null;
+    return mode === "grid" ? (myStats.bestGridScore ?? 0) : (myStats.bestDrawingAccuracy ?? 0);
+  }, [myStats, mode]);
+
+  const myRowIndex = useMemo(() => {
+    if (!myStats) return -1;
+    return sorted.findIndex((g) => g.userId && g.userId.toString() === myStats.userId.toString());
+  }, [sorted, myStats]);
+
+  const showMyExtraRow = !error && sorted.length > 0 && myStats && myBestValue && myRowIndex === -1;
 
   return (
     <div className="leaderboard-container">
@@ -83,20 +110,43 @@ export default function Leaderboard() {
           </div>
 
           <div className="lb-list">
-            {sorted.map((g, i) => (
-              <div className={`lb-row ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : ''}`} key={g.gameId || i}>
-                <div className="lb-cell lb-rank">{i + 1}</div>
+            {sorted.map((g, i) => {
+              const isMe = myStats && g.userId && g.userId.toString() === myStats.userId.toString();
+              const rankClass =
+                i === 0 ? "rank-1" : i === 1 ? "rank-2" : i === 2 ? "rank-3" : "";
+              return (
+                <div
+                  className={`lb-row ${rankClass} ${isMe ? "lb-row-me" : ""}`}
+                  key={g.gameId || i}
+                >
+                  <div className="lb-cell lb-rank">{i + 1}</div>
+                  <div className="lb-cell lb-score">
+                    {mode === "grid" ? (
+                      <ScoreCell value={g.score} />
+                    ) : (
+                      `${g.accuracy}%`
+                    )}
+                  </div>
+                  <div className="lb-cell lb-time">{g.timeTaken}s</div>
+                  <div className="lb-cell lb-name">{g.userName || "Anonymous"}</div>
+                </div>
+              );
+            })}
+
+            {showMyExtraRow && (
+              <div className="lb-row lb-row-me lb-row-mybest">
+                <div className="lb-cell lb-rank">–</div>
                 <div className="lb-cell lb-score">
                   {mode === "grid" ? (
-                    <ScoreCell value={g.score} />
+                    <ScoreCell value={myBestValue} />
                   ) : (
-                    `${g.accuracy}%`
+                    `${myBestValue}%`
                   )}
                 </div>
-                <div className="lb-cell lb-time">{g.timeTaken}s</div>
-                <div className="lb-cell lb-name">{g.userName || "Anonymous"}</div>
+                <div className="lb-cell lb-time">–</div>
+                <div className="lb-cell lb-name">{myStats.userName || "You"}</div>
               </div>
-            ))}
+            )}
           </div>
         </>
       )}

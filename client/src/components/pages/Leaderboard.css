@@ -111,6 +111,17 @@
   border-color: #CD7F32;
 }
 
+/* Highlight row for current user */
+.lb-row-me {
+  border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.lb-row-mybest {
+  margin-top: 12px;
+}
+
 .lb-cell {
   text-align: center;
 }
