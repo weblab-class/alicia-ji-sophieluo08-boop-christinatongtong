@@ -312,7 +312,7 @@ const ColorGrid = ({
             <div className="score-title">Your Score</div>
             {mode === "grid" ? (
               <>
-                <div className="score-percentage">{points}</div>
+                <div className="score-percentage">{serverScore != null ? serverScore : points}</div>
                 <div className="score-matches">
                   {correctMatches} out of {svgRegionCount} correct
                 </div>
