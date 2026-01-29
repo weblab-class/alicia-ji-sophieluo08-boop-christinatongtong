@@ -112,21 +112,55 @@
   box-sizing: border-box;
 }
 
+.lb-row {
+  position: relative;
+  padding-left: 48px; /* space for medal */
+}
+
 /* Top 3 Ranks */
 .lb-row.rank-1 {
-  background: linear-gradient(135deg, #FFD700 0%, #FFF8DC 100%);
+  background: linear-gradient(135deg, #ffe283 0%, #FFF8DC 100%);
   border-color: #FFD700;
 }
 
 .lb-row.rank-2 {
-  background: linear-gradient(135deg, #C0C0C0 0%, #F5F5F5 100%);
+  background: linear-gradient(135deg, #cecece 0%, #F5F5F5 100%);
   border-color: #C0C0C0;
 }
 
 .lb-row.rank-3 {
-  background: linear-gradient(135deg, #CD7F32 0%, #FFDEAD 100%);
-  border-color: #CD7F32;
+  background: linear-gradient(135deg, #f1ae6b 0%, #FFDEAD 100%);
+  border-color: #cd863f;
 }
+
+.lb-row.rank-1::before,
+.lb-row.rank-2::before,
+.lb-row.rank-3::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  padding-top: 1px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.lb-row.rank-1::before {
+  background-image: url("/gold.png");
+}
+
+.lb-row.rank-2::before {
+  background-image: url("/silver.png");
+}
+
+.lb-row.rank-3::before {
+  background-image: url("/bronze.png");
+}
+
 
 /* Highlight row for current user */
 .lb-row-me {
@@ -194,6 +228,7 @@
 .lb-score-67 .digit-7 {
   animation: digitDownUp 0.9s ease-in-out infinite;
 }
+
 
 @keyframes digitUpDown {
 
