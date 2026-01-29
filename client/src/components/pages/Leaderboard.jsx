@@ -57,9 +57,12 @@ export default function Leaderboard() {
     return copy.sort((a, b) => (b.accuracy - a.accuracy) || (a.timeTaken - b.timeTaken));
   }, [rows, mode]);
 
+  // Only show a "best" value if user has attempted (non-null and not 0)
   const myBestValue = useMemo(() => {
     if (!myStats) return null;
-    return mode === "grid" ? (myStats.bestGridScore ?? 0) : (myStats.bestDrawingAccuracy ?? 0);
+    const raw = mode === "grid" ? myStats.bestGridScore : myStats.bestDrawingAccuracy;
+    if (raw == null || raw === 0) return null;
+    return raw;
   }, [myStats, mode]);
 
   const myRowIndex = useMemo(() => {
