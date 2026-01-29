@@ -58,5 +58,8 @@ This project uses the following third-party libraries and APIs:
 - **Icons & Images** (public/)
   - paint-brush.png - https://www.flaticon.com/free-icon/paint-brush_103414?term=paint+brush&page=1&position=7&origin=tag&related_id=103414
   - paint_bucket.png - https://www.shareicon.net/color-pail-fill-painting-bucket-colour-696104
+  - six_seven.gif - https://giphy.com/explore/67s
+  - edit-pen.png - https://www.flaticon.com/free-icon/edit_7398464
+
 
 All dependencies are listed in `package.json` and can be installed via `npm install`.

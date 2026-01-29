@@ -66,6 +66,7 @@ export default function Leaderboard() {
     return sorted.findIndex((g) => g.userId && g.userId.toString() === myStats.userId.toString());
   }, [sorted, myStats]);
 
+  // Show "your best" row at bottom (rank –) when not in top 10; applies to both grid and drawing
   const showMyExtraRow = !error && sorted.length > 0 && myStats && myBestValue && myRowIndex === -1;
 
   return (
