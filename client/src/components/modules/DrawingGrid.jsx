@@ -316,68 +316,70 @@ export default function DrawingGrid({
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <svg
-            viewBox={svgContent.viewBox}
-            className={`drawing-svg ${!isPaused && selectedColor ? 'paintbrush-cursor' : ''}`}
-            role="img"
-            aria-label="Coloring drawing"
-            style={{
-              width: '100%',
-              height: '100%',
-              display: 'block',
-              background: 'transparent',
-              cursor: isPaused
-                ? 'not-allowed'
-                : (selectedColor
-                  ? `url('/paint-brush.png') 8 24, pointer`
-                  : 'pointer'),
-              objectFit: 'contain'
-            }}
-          >
-            {svgRegions.map((region) => {
-              const isSpecialColor = region.isSpecialColor;
-              // Always show black for special color regions (#aa008f), ignore correctPattern and user fills
-              let fillColor = '#f5f5f5';
-              if (isSpecialColor) {
-                fillColor = '#000000'; // Always black for special color regions in all stages
-              } else if (showCorrectColors) {
-                fillColor = correctPattern[region.id] ? getColorHex(correctPattern[region.id]) : '#f5f5f5';
-              } else if (displayFills[region.id]) {
-                fillColor = getColorHex(displayFills[region.id]);
-              }
+          <div className="drawing-inner-pad">
+            <svg
+              viewBox={svgContent.viewBox}
+              className={`drawing-svg ${!isPaused && selectedColor ? 'paintbrush-cursor' : ''}`}
+              role="img"
+              aria-label="Coloring drawing"
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'block',
+                background: 'transparent',
+                cursor: isPaused
+                  ? 'not-allowed'
+                  : (selectedColor
+                    ? `url('/paint-brush.png') 8 24, pointer`
+                    : 'pointer'),
+                objectFit: 'contain'
+              }}
+            >
+              {svgRegions.map((region) => {
+                const isSpecialColor = region.isSpecialColor;
+                // Always show black for special color regions (#aa008f), ignore correctPattern and user fills
+                let fillColor = '#f5f5f5';
+                if (isSpecialColor) {
+                  fillColor = '#000000'; // Always black for special color regions in all stages
+                } else if (showCorrectColors) {
+                  fillColor = correctPattern[region.id] ? getColorHex(correctPattern[region.id]) : '#f5f5f5';
+                } else if (displayFills[region.id]) {
+                  fillColor = getColorHex(displayFills[region.id]);
+                }
 
-              return (
-                <g
-                  key={region.id}
-                  onClick={isSpecialColor ? undefined : () => handleRegionClick(region.id)}
-                  style={{
-                    pointerEvents: isSpecialColor ? 'none' : 'all',
-                    transition: 'opacity 0.2s ease'
-                  }}
-                  onMouseEnter={isSpecialColor ? undefined : (e) => {
-                    if (!isPaused) {
-                      e.currentTarget.style.opacity = '0.85';
-                    }
-                  }}
-                  onMouseLeave={isSpecialColor ? undefined : (e) => {
-                    e.currentTarget.style.opacity = '1';
-                  }}
-                  dangerouslySetInnerHTML={{
-                    __html: region.element.replace(
-                      /^<(\w+)/,
-                      `<$1 fill="${fillColor}" style="cursor: ${isSpecialColor
-                        ? 'default'
-                        : (isPaused
-                          ? 'not-allowed'
-                          : (selectedColor
-                            ? `url('/paint-brush.png') 8 24, pointer`
-                            : 'pointer'))};"`
-                    )
-                  }}
-                />
-              );
-            })}
-          </svg>
+                return (
+                  <g
+                    key={region.id}
+                    onClick={isSpecialColor ? undefined : () => handleRegionClick(region.id)}
+                    style={{
+                      pointerEvents: isSpecialColor ? 'none' : 'all',
+                      transition: 'opacity 0.2s ease'
+                    }}
+                    onMouseEnter={isSpecialColor ? undefined : (e) => {
+                      if (!isPaused) {
+                        e.currentTarget.style.opacity = '0.85';
+                      }
+                    }}
+                    onMouseLeave={isSpecialColor ? undefined : (e) => {
+                      e.currentTarget.style.opacity = '1';
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: region.element.replace(
+                        /^<(\w+)/,
+                        `<$1 fill="${fillColor}" style="cursor: ${isSpecialColor
+                          ? 'default'
+                          : (isPaused
+                            ? 'not-allowed'
+                            : (selectedColor
+                              ? `url('/paint-brush.png') 8 24, pointer`
+                              : 'pointer'))};"`
+                      )
+                    }}
+                  />
+                );
+              })}
+            </svg>
+          </div>
         </div>
       </div>
     </div>
