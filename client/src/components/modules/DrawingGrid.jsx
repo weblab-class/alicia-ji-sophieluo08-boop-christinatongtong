@@ -223,7 +223,7 @@ export default function DrawingGrid({
         borderRadius: '8px'
       }}>
         <div style={{ fontSize: '18px', color: '#d32f2f', marginBottom: '10px' }}>
-          ❌ Error loading SVG
+          Error loading SVG
         </div>
         <div style={{ fontSize: '14px', color: '#666' }}>{error}</div>
       </div>
