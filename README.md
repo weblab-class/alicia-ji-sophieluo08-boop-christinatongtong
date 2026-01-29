@@ -33,7 +33,7 @@ This project uses the following third-party libraries and APIs:
   - Used via `@react-oauth/google` (frontend) and `google-auth-library` (backend)
 - **Google Fonts** - Web font service - https://fonts.google.com/
   - **Roboto** font - https://fonts.google.com/specimen/Roboto
-  
+
 
 ### Custom Fonts
 - **CS Bodega** (csbodega.otf) - Craft Supply Co - https://www.fontspace.com/cs-bodega-font-f147388
@@ -60,6 +60,7 @@ This project uses the following third-party libraries and APIs:
   - paint_bucket.png - https://www.shareicon.net/color-pail-fill-painting-bucket-colour-696104
   - six_seven.gif - https://giphy.com/explore/67s
   - edit-pen.png - https://www.flaticon.com/free-icon/edit_7398464
+  - gold.png, silver.png, & bronze.png - https://designbundles.net/cooshstore/1191358-coin-game-medal-with-the-star-icon-gold-silver-and
 
 
 All dependencies are listed in `package.json` and can be installed via `npm install`.
