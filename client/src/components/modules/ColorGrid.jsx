@@ -313,21 +313,10 @@ const ColorGrid = ({
         {phase === "gameover" && (
           <div className="score-details">
             <div className="score-title">Your Score</div>
-            {mode === "grid" ? (
-              <>
-                <div className="score-percentage">{serverScore != null ? serverScore : points}</div>
-                <div className="score-matches">
-                  {correctMatches} out of {svgRegionCount} correct
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="score-percentage">{percentage}%</div>
-                <div className="score-matches">
-                  {correctMatches} out of {svgRegionCount} correct
-                </div>
-              </>
-            )}
+            <div className="score-percentage">{serverScore != null ? serverScore : (mode === "grid" ? points : `${percentage}%`)}</div>
+            <div className="score-matches">
+              {correctMatches} out of {svgRegionCount} correct
+            </div>
           </div>
         )}
       </div>

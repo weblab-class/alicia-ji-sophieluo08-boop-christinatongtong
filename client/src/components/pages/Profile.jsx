@@ -41,9 +41,9 @@ export default function Profile() {
         </li>
 
         <li>
-          <span className="label">Best Drawing Accuracy</span>
+          <span className="label">Best Drawing Score</span>
           <span className="value">
-            {stats.bestDrawingAccuracy ?? 0}%
+            {stats.bestDrawingScore ?? stats.bestDrawingAccuracy ?? 0}
           </span>
         </li>
 

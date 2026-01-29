@@ -50,16 +50,13 @@ export default function Leaderboard() {
 
   const sorted = useMemo(() => {
     const copy = [...rows];
-    if (mode === "grid") {
-      return copy.sort((a, b) => (b.score - a.score) || ((a.createdAt || 0) - (b.createdAt || 0)));
-    }
-    return copy.sort((a, b) => (b.accuracy - a.accuracy) || ((a.createdAt || 0) - (b.createdAt || 0)));
-  }, [rows, mode]);
+    return copy.sort((a, b) => (b.score - a.score) || ((a.createdAt || 0) - (b.createdAt || 0)));
+  }, [rows]);
 
   // Only show a "best" value if user has attempted (non-null and not 0)
   const myBestValue = useMemo(() => {
     if (!myStats) return null;
-    const raw = mode === "grid" ? myStats.bestGridScore : myStats.bestDrawingAccuracy;
+    const raw = mode === "grid" ? myStats.bestGridScore : (myStats.bestDrawingScore ?? myStats.bestDrawingAccuracy);
     if (raw == null || raw === 0) return null;
     return raw;
   }, [myStats, mode]);
@@ -106,7 +103,7 @@ export default function Leaderboard() {
         <>
           <div className="lb-header">
             <div className="lb-header-cell">Rank</div>
-            <div className="lb-header-cell">{mode === "grid" ? "Score" : "Accuracy"}</div>
+            <div className="lb-header-cell">Score</div>
             <div className="lb-header-cell">Name</div>
           </div>
 
@@ -122,11 +119,7 @@ export default function Leaderboard() {
                 >
                   <div className="lb-cell lb-rank">{i + 1}</div>
                   <div className="lb-cell lb-score">
-                    {mode === "grid" ? (
-                      <ScoreCell value={g.score} />
-                    ) : (
-                      `${g.accuracy}%`
-                    )}
+                    <ScoreCell value={g.score} />
                   </div>
                   <div className="lb-cell lb-name">{g.userName || "Anonymous"}</div>
                 </div>
@@ -137,11 +130,7 @@ export default function Leaderboard() {
               <div className="lb-row lb-row-me lb-row-mybest">
                 <div className="lb-cell lb-rank">–</div>
                 <div className="lb-cell lb-score">
-                  {mode === "grid" ? (
-                    <ScoreCell value={myBestValue} />
-                  ) : (
-                    `${myBestValue}%`
-                  )}
+                  <ScoreCell value={myBestValue} />
                 </div>
                 <div className="lb-cell lb-name">{myStats.userName || "You"}</div>
               </div>

@@ -160,10 +160,14 @@ function calculateScore(correctPattern, userPattern, timeTaken, timeLimit, diffi
     const accuracyBase = n > 0 ? (c / n) * 100 : 0;
     score = Math.round(accuracyBase * scale);
   } else {
-    const maxBonusTime = timeLimit / 2;
-    const timeBonus = Math.max(0.5, Math.min(1.0, 1 - (timeTaken / (maxBonusTime * 2))));
-    score = Math.round(adjustedAccuracy * timeBonus);
-    score = Math.min(100, score);
+    // Drawing: max score 300. Time multiplier uses full span (r = time remaining fraction).
+    const MAX_DRAWING_SCORE = 300;
+    const T = Math.max(Number(timeLimit), 1);
+    const t = Math.max(0, Number(timeTaken));
+    const r = Math.max(0, Math.min(1, (T - t) / T));
+    const timeMult = 0.5 + 0.5 * r;  // 0.5 when used all time, 1.0 when instant
+    score = Math.round((adjustedAccuracy / 100) * MAX_DRAWING_SCORE * timeMult);
+    score = Math.min(MAX_DRAWING_SCORE, score);
   }
 
   return {
@@ -294,7 +298,7 @@ router.post("/game/submit", auth.ensureLoggedIn, (req, res) => {
           // optional: keep old field in sync
           if (game.score > (user.bestScore ?? 0)) user.bestScore = game.score;
         } else if (game.mode === "drawing") {
-          if (game.accuracy > (user.bestDrawingAccuracy ?? 0)) user.bestDrawingAccuracy = game.accuracy;
+          if (game.score > (user.bestDrawingAccuracy ?? 0)) user.bestDrawingAccuracy = game.score;
         }
 
         // calculate new average accuracy
@@ -369,10 +373,7 @@ router.get("/stats/leaderboard", async (req, res) => {
 
     const match = { status: "completed", mode };
 
-    const sort =
-      mode === "grid"
-        ? { score: -1, createdAt: 1 }
-        : { accuracy: -1, timeTaken: 1, createdAt: 1 };
+    const sort = { score: -1, createdAt: 1 };
 
     const rows = await Game.aggregate([
       { $match: match },
@@ -458,6 +459,7 @@ router.get("/stats/user/:userId", (req, res) => {
             bestScore: user.bestScore,
             bestGridScore: user.bestGridScore ?? 0,
             bestDrawingAccuracy: user.bestDrawingAccuracy ?? 0,
+            bestDrawingScore: user.bestDrawingAccuracy ?? 0, // same as bestDrawingAccuracy (stored score 0–300)
             averageAccuracy: user.averageAccuracy,
             recentGames: recentGames.map((game) => ({
               gameId: game._id,
