@@ -455,6 +455,7 @@ router.get("/stats/user/:userId", (req, res) => {
           res.send({
             userId: user._id,
             userName: user.name,
+            email: user.email,
             gamesPlayed: user.gamesPlayed,
             bestScore: user.bestScore,
             bestGridScore: user.bestGridScore ?? 0,
@@ -477,6 +478,56 @@ router.get("/stats/user/:userId", (req, res) => {
       res.status(500).send({ err: "Failed to fetch user stats" });
     });
 });
+
+
+// PATCH /api/user/name
+router.patch("/user/name", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (typeof name !== "string") return res.status(400).send({ err: "name must be a string" });
+
+    const trimmed = name.trim();
+    if (trimmed.length < 1 || trimmed.length > 30) {
+      return res.status(400).send({ err: "name must be 1–30 chars" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { name: trimmed },
+      { new: true }
+    );
+
+    res.send({ userId: user._id, name: user.name, email: user.email });
+  } catch (e) {
+    res.status(500).send({ err: "Failed to update name" });
+  }
+});
+
+
+// DELETE /api/user/me
+router.delete("/user/me", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // delete game history first
+    await Game.deleteMany({ userId });
+
+    // delete the user
+    await User.deleteOne({ _id: userId });
+
+    // logout (clear session) — assumes auth.logout exists
+    req.logout?.(); // depending on your auth lib
+    req.session?.destroy?.(() => {});
+
+    res.send({ ok: true });
+  } catch (e) {
+    res.status(500).send({ err: "Failed to delete account" });
+  }
+});
+
+
+
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

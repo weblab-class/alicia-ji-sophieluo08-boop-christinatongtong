@@ -45,6 +45,101 @@
   font-weight: 600;
 }
 
+.edit-btn {
+  width: 18px;
+  height: 18px;
+  background-image: url("/edit-pen.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.edit-btn:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+
+.save-btn,
+.cancel-btn {
+  margin-left: 6px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.save-btn:hover {
+  opacity: 1;
+  font-weight: 600;
+}
+
+.cancel-btn:hover {
+  opacity: 1;
+}
+
+/* Make the value column a right-aligned container */
+.profile-list .value {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The “invisible” input that looks like normal text */
+.name-input-inline {
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+
+  text-align: right;
+  width: fit-content;
+  min-width: 4ch;
+  max-width: 12ch;
+}
+
+/* Optional: subtle focus indicator without underline */
+/* .name-input-inline:focus {
+  background: rgba(0,0,0,0.04);
+  border-radius: 6px;
+  padding: 2px 6px;
+} */
+
+
+.danger {
+  margin-top: 80px;
+  width: 100%;
+  padding: 14px 0;
+  background-color: transparent;
+  color: #ea5e6a;
+  border: 3px solid #ea5e6a;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: 'Bodega';
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.danger:hover {
+  background-color: #ea5e6a;
+  transform: translateY(-1px);
+  color: white;
+}
+
+
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   .profile-page {

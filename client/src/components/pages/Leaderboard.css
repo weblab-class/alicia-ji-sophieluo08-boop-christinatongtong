@@ -39,17 +39,34 @@
   cursor: pointer;
   text-align: center;
   padding: 10px 12px;
-  border-radius: 10px;
+
   font-weight: 700;
   font-size: 14px;
-  opacity: 0.65;
+
+  opacity: 0.6;
+  color: rgb(200, 200, 200);
+
+  border-radius: 10px;
+  border: 1.5px solid transparent; /* invisible frame baseline */
+
+  transition: border-color 0.15s ease, opacity 0.15s ease;
 }
 
-.lb-tab.active {
-  background: white;
-  opacity: 1;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10);
+/* Hover: black frame */
+.lb-tab:hover {
+  border-color: rgb(200, 200, 200);
+  opacity: 0.85;
 }
+
+/* Active / selected: solid black frame */
+.lb-tab.active {
+  border-color: rgb(44, 44, 44);
+  color: rgb(57, 57, 57);
+  opacity: 1;
+  background: transparent;   /* kill pill background */
+  box-shadow: none;          /* kill glow */
+}
+
 
 /* Header */
 .lb-header {
