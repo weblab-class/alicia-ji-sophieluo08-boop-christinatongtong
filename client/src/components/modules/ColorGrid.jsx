@@ -247,15 +247,16 @@ const ColorGrid = ({
   useEffect(() => {
     if (phase !== "gameover") return;
 
-    const isSixtySeven = percentage === 67 || correctMatches === 67;
-    if (!isSixtySeven) return;
+    // Easter egg should trigger ONLY when final score is exactly 67 (grid mode).
+    if (mode !== "grid") return;
+    if (serverScore !== 67) return;
 
     const timer = setTimeout(() => {
       setShowMeme(true);
     }, 1800); // 1.5 seconds delay
 
     return () => clearTimeout(timer);
-  }, [phase, percentage, correctMatches]);
+  }, [phase, mode, serverScore]);
 
   useEffect(() => {
     if (phase !== "gameover") return;
