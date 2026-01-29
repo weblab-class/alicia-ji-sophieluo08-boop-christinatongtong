@@ -68,23 +68,9 @@
 }
 
 
-/* Header */
-.lb-header {
-  padding: 12px 16px;
-  font-weight: 700;
-  font-size: 14px;
-  opacity: 0.7;
-  margin: 0 auto 8px;
-  max-width: 600px;
-  align-items: center;
-}
 
 .lb-header-cell {
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 
@@ -115,6 +101,17 @@
 .lb-row {
   position: relative;
   padding-left: 48px; /* space for medal */
+}
+
+/* Header */
+.lb-header {
+  font-weight: 700;
+  font-size: 14px;
+  opacity: 0.7;
+  margin: 0 auto 8px;
+  max-width: 600px;
+  align-items: center;
+  padding-left: 48px
 }
 
 /* Top 3 Ranks */
