@@ -4,6 +4,15 @@
 }
 
 html:has(.home-container) {
+  background-color: #000000;
+}
+
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
   background: linear-gradient(-45deg, #000000, #1a0a2e, #16213e, #0f3460);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
@@ -21,15 +30,6 @@ html:has(.home-container) {
   }
 }
 
-.home-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  width: 100%;
-  background-color: transparent;
-}
-
 .home-content {
   display: flex;
   flex-direction: column;
@@ -39,6 +39,7 @@ html:has(.home-container) {
   max-width: 1000px;
   gap: 40px;
   padding: 40px 20px;
+  z-index: 1;
 }
 
 .mode-select {
