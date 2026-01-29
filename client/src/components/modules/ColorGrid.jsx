@@ -216,11 +216,14 @@ const ColorGrid = ({
   // select a random drawing from our drawings folder
   const SVG_PATHS = [
     "/drawings/bear.svg",
-    "/drawings/snake.svg",
-    "/drawings/apple.svg",
+    // "/drawings/snake.svg",
+    // "/drawings/apple.svg",
     "/drawings/pug.svg",
     "/drawings/cake.svg",
     "/drawings/udon.svg",
+    "/drawings/icecream.svg",
+    "/drawings/butterfly.svg",
+    "/drawings/fish.svg",
     // add the paths once more photos come in
   ];
 
