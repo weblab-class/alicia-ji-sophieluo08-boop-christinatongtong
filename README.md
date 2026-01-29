@@ -49,6 +49,8 @@ This project uses the following third-party libraries and APIs:
   - bear.svg - https://svgcollections.com/design/adorable-bear-outline-svg-2/ (Modified)
   - pug.svg - https://stock.adobe.com/search?k=dog+with+glasses+silhouette&asset_id=1652276422 (Modfied)
   - snake.svg - https://www.freepik.com/free-vector/hand-drawn-flat-design-snake-outline_22340381.htm#fromView=keyword&page=1&position=0&uuid=7a4fb980-0902-49f1-8bf4-367b64b0617f&query=Cute+baby+animals+line+art+snake (Modified)
+  - cake.svg - https://www.svgrepo.com/svg/482193/whole-cake-1 (Modified)
+  - udon.svg - https://www.svgrepo.com/svg/482333/udon-4 (Modified)
 
 - **Icons & Images** (public/)
   - paint-brush.png - https://www.flaticon.com/free-icon/paint-brush_103414?term=paint+brush&page=1&position=7&origin=tag&related_id=103414
