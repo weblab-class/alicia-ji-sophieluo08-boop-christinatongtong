@@ -1,3 +1,19 @@
+# 🎨 Palette
+
+Palette is a fast-paced cognitive game that trains **focus, visual memory, and recall** through color-based challenges.
+
+Players engage in multiple game modes, including **grid memorization** and **drawable color regions**. In each mode, colors are shown briefly and must be accurately reproduced after they disappear. Difficulty increases through larger layouts, tighter time limits, and more subtle color distinctions.
+
+In today's online world, addictive doomscrolling shortens our attention spans with brainrot, but Palette is an addictive game that aims to strengthen your attention, also with some brainrot.
+
+---
+
+### Game Modes
+- **Grid Mode**: Memorize and recreate a color grid under time pressure
+- **Drawing Mode**: Recall and color free-form regions with the correct colors
+
+---
+
 ## Third-Party Libraries and APIs
 
 This project uses the following third-party libraries and APIs:
